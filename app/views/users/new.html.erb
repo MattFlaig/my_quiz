@@ -1,0 +1,48 @@
+<div class= "center hero-unit">
+<h1> Register </h1>
+</br>
+
+<%= form_for @user do |f| %>
+  <% if @user.errors.any? %>
+  <%= flash[:danger] = "There are some errors!" %>
+    <ul>
+    <% @user.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  <% end %>
+
+  <fieldset>
+  <div class="control-group">
+    <%= f.label :username %>
+      <div class="controls">
+        <%= f.text_field :username %>
+      </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :email %>
+    <div class="controls">
+      <%= f.text_field :email %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :password %>
+    <div class="controls">
+      <%= f.password_field :password %>
+    </div>
+  </div>
+  <div class="control-group">
+  <%= f.label :password_confirmation %>
+    <div class="controls">
+      <%= f.password_field :password_confirmation %>
+    </div>
+  </div>
+  </br>
+
+  <div>
+    <%= f.submit class: "btn btn-large btn-primary" %>
+  </div>
+  </fieldset>
+
+<% end %>
+</div>
