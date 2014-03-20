@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MyQuiz</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<header class= "navbar navbar-fixed-top">
+  <div class= "navbar-default">
+    <div class= "container"><%= link_to "My Quiz", questions_path, id: "logo" %>
+      <ul class= "nav pull-right">
+        
+        
+          <li><%= link_to "Home" %></li>
+          <li><%= link_to "Add Question", new_question_path %></li>
+          <li><%= link_to "Browse Questions", questions_path %></li> 
+          <li><%= link_to "Add Category", new_category_path %></li> 
+          
+
+      </ul>
+    </div>
+  </div>
+  </header>
+
+<%= yield %>
+
+</body>
+</html>
