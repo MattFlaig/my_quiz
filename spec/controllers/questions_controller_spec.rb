@@ -27,7 +27,15 @@ describe QuestionsController do
   end
 
   describe "POST create" do
-  
+    context "with valid input" do
+      it "creates a new question"
+      it "sets a flash message that the question was created"
+      it "redirects to questions path"
+    end
 
+    context "with invalid input" do
+      it "does not create a new question"
+      it "renders the new template"
+    end
   end
 end
