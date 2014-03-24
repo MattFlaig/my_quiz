@@ -4,19 +4,71 @@ describe QuestionsController do
   
   describe "GET index" do
     it "should set the @questions variable" do
-      category = Category.create(category_name: "Stupid category")
-      question_1 = Question.create(question_text: "Really?", category_id: category.id)
-      question_2 = Question.create(question_text: "Really not?", category_id: category.id)
+      category = Fabricate(:category)
+      question_1 = Fabricate(:question, category_id: category.id)
+      question_2 = Fabricate(:question, category_id: category.id)
       get :index
       expect(assigns[:questions]).to match_array([question_1, question_2])
     end
 
     it "should set the @categories variable" do
-      category_1 = Category.create(category_name: "Stupid category")
-      category_2 = Category.create(category_name: "Clever category")
+      category_1 = Fabricate(:category)
+      category_2 = Fabricate(:category)
       get :index
       expect(assigns[:categories]).to match_array([category_1, category_2])
     end
+  end
 
+  describe "GET new" do
+    it "sets the @question variable to be an instance of question" do
+      amanda = Fabricate(:user)
+      set_current_user(amanda)
+      get :new
+      expect(assigns(:question)).to be_instance_of(Question)
+    end
+  end
+
+  describe "POST create" do
+    context "with valid input" do
+      before do
+        amanda = Fabricate(:user)
+        set_current_user(amanda)
+        category = Fabricate(:category)
+        post :create, question: {question_text: "Blabla?", user_id: amanda.id, category_id: category.id}
+      end
+
+      it_behaves_like "requires login" do
+        let(:action) {post :create, user_id: 1}
+      end
+
+      it "creates a new question for the current user" do
+        expect(Question.count).to eq(1)
+      end
+       
+      it "sets a flash message that the question was created" do
+        expect(flash[:notice]).to eq("Question succesfully created!")
+      end
+
+      it "redirects to questions path" do
+        expect(response).to redirect_to questions_path
+      end
+    end
+
+    context "with invalid input" do
+      before do
+        amanda = Fabricate(:user)
+        set_current_user(amanda)
+        category = Fabricate(:category)
+        post :create, question: {user_id: amanda.id, category_id: category.id}
+      end
+
+      it "does not create a new question" do
+        expect(Question.count).to eq(0)
+      end
+
+      it "renders the new template" do
+        expect(response).to render_template :new
+      end
+    end
   end
 end

@@ -1,0 +1,32 @@
+<%= form_for @question do |f| %>
+  <% if @question.errors.any? %>
+    <%= flash[:error] = "There are some errors!" %>
+    <ul>
+      <% @question.errors.full_messages.each do |msg| %>
+        <li><%=  msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+</br>
+
+  <fieldset>
+    <div class="control-group">
+    <%= f.label :question_text %>
+      <div class="controls">
+        <%= f.text_field :question_text %>
+      </div>
+    </div>
+   
+    <div class="control-group">
+      <%= f.label :category %>
+      <div class="controls">
+        <%= f.select :category_id, Category.all.collect {|x| [x.category_name, x.id]}, {}, :multiple => false %>
+      </div>
+    </div>
+
+    </br>
+    <div>
+      <%= f.submit class: "btn btn-large btn-success" %>
+    </div>
+  </fieldset>
+<% end %>
