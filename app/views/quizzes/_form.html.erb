@@ -1,0 +1,46 @@
+<%= form_for @quiz do |f| %>
+  <% if @quiz.errors.any? %>
+    <%= flash[:error] = "There are some errors!" %>
+    <ul>
+      <% @quiz.errors.full_messages.each do |msg| %>
+        <li><%=  msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+</br>
+
+  <fieldset>
+    <div class="control-group">
+    <%= f.label :quiz_name %>
+      <div class="controls">
+        <%= f.text_field :quiz_name %>
+      </div>
+    </div>
+    <div class="control-group">
+    <%= f.label :description %>
+      <div class="controls">
+        <%= f.text_area :description %>
+      </div>
+        <%#= f.select :category_id, Category.all.collect {|x| [x.name, x.id]}, {}, :multiple => false %>
+    </div>
+    <div>
+      <%= hidden_field_tag 'category_id', @category.id %>
+    </div>
+    
+    <div class="control-group">
+    <%= f.label :possible_questions_for_this_category %>
+      <div class="controls">
+          <%= f.select :question_ids, @category.questions.collect {|x| [x.question_text, x.id]}, {}, :multiple => true %>
+      </div>
+    </div>
+
+
+
+    <div>
+      <%= f.submit class: "btn btn-large btn-success" %>
+      <!-- <div class="float" >
+        <%#= back_to_quiz_item_list %>
+      </div> -->
+    </div>
+  </fieldset>
+<% end %>

@@ -1,9 +1,10 @@
 MyQuiz::Application.routes.draw do
 
-  root to: 'questions#index'
+  root to: 'quizzes#index'
   resources :questions
   resources :categories
   resources :users, only:[:new, :create, :show]
+  resources :quizzes
 
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'

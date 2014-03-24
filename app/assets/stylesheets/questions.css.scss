@@ -114,6 +114,7 @@ h2 {
 
 .navbar-default{
   background-color: green;
+  max-height: 58px;
 }
 
 .navbar-default .nav > li > a {
@@ -124,6 +125,7 @@ h2 {
   padding: 15px;
   margin-right: 5px;
   line-height: 2;
+  
 }
 
 .navbar-default navbar-nav  > a,

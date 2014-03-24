@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:password])
       session[:user_id] = user.id
       flash[:notice] = "You are logged in now!"
-      redirect_to questions_path
+      redirect_to quizzes_path
     else
       flash[:danger] = "There is something wrong with your input data!"
       render "new"

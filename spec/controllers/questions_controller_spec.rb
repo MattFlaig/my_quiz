@@ -21,6 +21,8 @@ describe QuestionsController do
 
   describe "GET new" do
     it "sets the @question variable to be an instance of question" do
+      amanda = Fabricate(:user)
+      set_current_user(amanda)
       get :new
       expect(assigns(:question)).to be_instance_of(Question)
     end
@@ -28,14 +30,45 @@ describe QuestionsController do
 
   describe "POST create" do
     context "with valid input" do
-      it "creates a new question"
-      it "sets a flash message that the question was created"
-      it "redirects to questions path"
+      before do
+        amanda = Fabricate(:user)
+        set_current_user(amanda)
+        category = Fabricate(:category)
+        post :create, question: {question_text: "Blabla?", user_id: amanda.id, category_id: category.id}
+      end
+
+      it_behaves_like "requires login" do
+        let(:action) {post :create, user_id: 1}
+      end
+
+      it "creates a new question for the current user" do
+        expect(Question.count).to eq(1)
+      end
+       
+      it "sets a flash message that the question was created" do
+        expect(flash[:notice]).to eq("Question succesfully created!")
+      end
+
+      it "redirects to questions path" do
+        expect(response).to redirect_to questions_path
+      end
     end
 
     context "with invalid input" do
-      it "does not create a new question"
-      it "renders the new template"
+      before do
+        amanda = Fabricate(:user)
+        set_current_user(amanda)
+        category = Fabricate(:category)
+        post :create, question: {user_id: amanda.id, category_id: category.id}
+      end
+
+      it "does not create a new question" do
+        expect(Question.count).to eq(0)
+      end
+
+      it "renders the new template" do
+        expect(response).to render_template :new
+      end
     end
   end
 end

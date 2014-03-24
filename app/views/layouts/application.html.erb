@@ -9,14 +9,38 @@
 <body>
 <header class= "navbar navbar-fixed-top">
   <div class= "navbar-default">
-    <div class= "container"><%= link_to "My Quiz", questions_path, id: "logo" %>
+    <div class= "container"><%= link_to "My Quiz", root_path, id: "logo" %>
       <ul class= "nav pull-right">
         
         <% if logged_in? %>
+
+           <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle"> New Quiz <b class="caret"></b><a/>
+            <ul class="dropdown-menu">
+              <li>
+                <% @categories.each do |category| %>
+                  <%= link_to category.category_name, {:controller => "quizzes", :action => "new", :category => category.id} %>
+                <% end %>
+              </li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle"> Questions <b class="caret"></b><a/>
+            <ul class="dropdown-menu">
+              <li>
+                <%= link_to "Add Question", new_question_path %>
+              </li>
+              <li>
+                <%= link_to "Browse Questions", questions_path %>
+              </li>
+              <li>
+                <%= link_to "Add Category", new_category_path %>
+              </li> 
+            </ul>
+          </li>
+
           <li><%= link_to "Home", root_path %></li>
-          <li><%= link_to "Add Question", new_question_path %></li>
-          <li><%= link_to "Browse Questions", questions_path %></li> 
-          <li><%= link_to "Add Category", new_category_path %></li> 
           <li><%= link_to "Logout", logout_path %></li>
         <% else %>
           <li><%= link_to "Home", root_path %></li>
