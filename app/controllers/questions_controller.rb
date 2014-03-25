@@ -6,6 +6,10 @@ before_action :set_categories
     @questions = current_user.questions.all
   end
 
+  def show
+    @question = Question.find(params[:id])
+  end
+
   def new
     @question = current_user.questions.build
   end

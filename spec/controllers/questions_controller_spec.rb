@@ -18,6 +18,21 @@ describe QuestionsController do
     end
   end
 
+  describe "GET show" do
+    it "sets the @question variable" do
+      amanda = Fabricate(:user)
+      set_current_user(amanda)
+      category = Fabricate(:category)
+      question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
+      get :show, id: question.id 
+      expect(assigns(:question)).to eq(question)
+    end
+
+    it_behaves_like "requires login" do
+      let(:action) {get :show, id: 1}
+    end
+  end
+
   describe "GET new" do
     it "sets the @question variable to be an instance of question" do
       amanda = Fabricate(:user)
