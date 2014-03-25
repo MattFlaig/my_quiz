@@ -16,7 +16,7 @@ describe SessionsController do
       it "redirects to index" do
         amanda = Fabricate(:user)
         post :create, email: amanda.email, password: amanda.password
-        expect(response).to redirect_to questions_path
+        expect(response).to redirect_to quizzes_path
       end
     end
 

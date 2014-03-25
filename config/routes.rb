@@ -5,6 +5,7 @@ MyQuiz::Application.routes.draw do
   resources :categories
   resources :users, only:[:new, :create, :show]
   resources :quizzes
+  resources :answers
 
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
