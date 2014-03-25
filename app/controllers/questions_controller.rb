@@ -1,9 +1,9 @@
 class QuestionsController < ApplicationController
-before_action :require_login, except: [:index]
+before_action :require_login
 before_action :set_categories
+
   def index
-    @questions = Question.all
-    @categories = Category.all
+    @questions = current_user.questions.all
   end
 
   def new
