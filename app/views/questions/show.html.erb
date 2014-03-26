@@ -42,10 +42,14 @@
   <% end %>
 </table>  
 </br>
-      
+<div>
+<h2>
+  If you want more answers, you can add some 
+  <%= link_to "here", {:controller => "answers", :action => "new", :question => @question} %> . 
+</h2>    
   <div class="float" >
     <%= back_to_questions_list %>
   </div>
-
+</div>
 </br>
 </div>
