@@ -25,6 +25,24 @@ before_action :set_categories
     end
   end
 
+  def set_correct_answer
+    @question = Question.find(params[:id])
+    @answer = Answer.find(params[:id])
+    @answer.correct = 1
+    @answer.save
+    flash[:notice] = "The answer status of answer text #{@answer.answer_text.to_s} was set to correct"
+    render 'show'
+  end
+
+  def set_incorrect_answer
+    @question = Question.find(params[:id])
+    @answer = Answer.find(params[:id])
+    @answer.correct = 0
+    @answer.save
+    flash[:notice] = "The answer status of answer text #{@answer.answer_text.to_s} was set to incorrect"
+    render 'show'
+  end
+
   private
 
   def question_params

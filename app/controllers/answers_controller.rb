@@ -13,7 +13,6 @@ class AnswersController < ApplicationController
     @answer = Answer.new(answer_params)
     @answer.question = @question
     
-    
     if @answer.save
       flash[:notice] = "A new answer was created!"
       redirect_to questions_path
@@ -22,6 +21,19 @@ class AnswersController < ApplicationController
     end
     #binding.pry
   end
+
+  # def set_correct
+  #   @answer = Answer.find(params[:id])
+  #   @answer.correct = 1
+  #   @answer.save
+  #   redirect_to questions_path
+  # end
+
+  # def set_incorrect
+  #   @answer = Answer.find(params[:id])
+  #   @answer.correct = 0
+  #   @answer.save
+  # end
 
   private
 
