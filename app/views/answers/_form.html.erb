@@ -1,0 +1,34 @@
+<%= form_for @answer do |f| %>
+  <% if @answer.errors.any? %>
+    <%= flash[:error] = "There are some errors!" %>
+    <ul>
+      <% @answer.errors.full_messages.each do |msg| %>
+        <li><%=  msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+</br>
+
+  <fieldset>
+    <div class="control-group">
+    <%= f.label :answer_text %>
+      <div class="controls">
+        <%= f.text_field :answer_text %>
+      </div>
+    </div>
+   
+    <div>
+      <%= hidden_field_tag "question_id", @question.id %>
+    </div>
+    <div>
+      <%= f.hidden_field :correct, :value => 0 %>
+    </div>
+    
+    </br>
+    <div>
+      <%= f.submit class: "btn btn-large btn-success" %>
+    </div>
+  </fieldset>
+<% end %>
+

@@ -1,0 +1,6 @@
+<div class= "center hero-unit">
+  <h1>Create a new Answer</h1>
+  <h3>for question <%= @question.question_text %></h3>
+  <h4>Note: Answers are set to "false" by default. </br> You can choose the right answer on the <%=  link_to "show question page", question_path(@question.id) %>.</h4>
+  <%= render "form" %>
+</div>

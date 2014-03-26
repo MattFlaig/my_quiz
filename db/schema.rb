@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20140325132241) do
     t.integer  "question_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "correct?"
+    t.integer  "correct"
   end
 
   create_table "categories", force: true do |t|

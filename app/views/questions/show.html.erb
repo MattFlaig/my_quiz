@@ -1,51 +1,75 @@
 <div class= "center hero-unit">
-<h1> Details of your Question:</h1>
+<h1> Details:</h1>
 </br>
-<h2> Question text: <%= @question.question_text %></h2>
-<h2> Category: <%= @question.category.category_name %> </h2>
+<h3>Question Data</h3>
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th colspan="1"> Question Text </th>
+      <th colspan="1"> Question Category </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= @question.question_text %></td>
+      <td><%=  @question.category.category_name %></td>
+    </tr> 
+  </tbody>
+</table>  
+
 </br>
+<h3>Corresponding answers</h3>
+
 <p>
 <table class="table table-striped table-bordered table-condensed">
 <thead>
   <tr>
-    <th></th>
-    <th colspan="1"> Answers </th>
-    <th colspan="1"> Correct? </th>
+    <th colspan="1"> Answer Number </th>
+    <th colspan="1"> Answer Text </th>
+    <th colspan="1"> Answer Status </th>
     <th colspan="1"> Actions </th>
   </tr>
 </thead>
   
-  <% @question.answers.each do |answer| %>
+  <% @question.answers.each_with_index do |answer, index| %>
   <tbody>
     <tr>
-      <td></td>
+      <td><%= index+1 %></td>
       <td><%=  answer.answer_text %></td>
       <td>
-         <% if answer.correct? == 1 %>
-          Yes
+         <% if answer.correct == 0 %>
+          Incorrect
          <% else %>
-          No
+          Correct
          <% end %>
      </td>
       <td>
-        <%= link_to(answer, method: :delete, class: "btn btn-small btn-danger") do %> 
-          Delete
-            <i class="icon-trash icon-white"></i>
+        <% if answer.correct == 0 %>
+          <%= link_to "correct", set_correct_answer_question_path %>
+        <% else %>
+          <%= link_to "incorrect", set_incorrect_answer_question_path %>
         <% end %>
-        <%= link_to(edit_answer_path(answer), class: "btn btn-small btn-warning") do %>
+        
+        <%= link_to "delete", answer, method: :delete %>
+        
+       <!--  <%#= link_to(edit_answer_path(answer), class: "btn btn-small btn-warning") do %>
           Edit
             <i class="icon-edit icon-white"></i>
-        <% end %>
+        <#% end %> -->
       </td>
     </tr> 
   </tbody>
   <% end %>
 </table>  
 </br>
-      
-  <div class="float" >
-    <%= back_to_questions_list %>
+  <div>
+  <h2>
+    If you want more answers, you can add some 
+    <%= link_to "here", {:controller => "answers", :action => "new", :question => @question} %> . 
+  </h2>    
+    <div class="float" >
+      <%= back_to_questions_list %>
+    </div>
   </div>
-
 </br>
 </div>
