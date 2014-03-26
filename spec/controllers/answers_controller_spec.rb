@@ -13,17 +13,20 @@ describe AnswersController do
     it_behaves_like "requires login" do
       let(:action) {get :new}
     end
-
   end
 
   describe "POST create" do
+    it_behaves_like "requires login" do
+      let(:action) {post :create, question_id: 1}
+    end
+
     context "with valid input" do
       before do
         amanda = Fabricate(:user)
         set_current_user(amanda)
         category = Fabricate(:category)
         question = Fabricate(:question, user_id: amanda.id, category_id: category.id)
-        post :create, answer: {answer_text: "Blabla!", question_id: question.id, correct?: 0}
+        post :create, answer: {answer_text: "Blabla!", question_id: question.id, correct: 0}
       end
 
       it "creates a new answer" do
@@ -37,12 +40,24 @@ describe AnswersController do
       it "redirects to question show page" do
         expect(response).to redirect_to questions_path#(id: question_id)
       end
-
     end
 
     context "with invalid input" do
-      it "does not create the answer"
-      it "renders the new template"
+      before do
+        amanda = Fabricate(:user)
+        set_current_user(amanda)
+        category = Fabricate(:category)
+        question = Fabricate(:question, user_id: amanda.id, category_id: category.id)
+        post :create, answer: {question_id: question.id, correct: 0}
+      end
+
+      it "does not create the answer" do
+        expect(Answer.count).to eq(0)
+      end
+
+      it "renders the new template" do
+        expect(response).to render_template :new
+      end
     end
   end
 end

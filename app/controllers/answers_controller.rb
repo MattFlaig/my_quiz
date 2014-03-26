@@ -1,4 +1,5 @@
 class AnswersController < ApplicationController
+  require 'pry'
   before_action :set_categories 
   before_action :require_login 
 
@@ -19,6 +20,7 @@ class AnswersController < ApplicationController
     else
       render 'new'
     end
+    #binding.pry
   end
 
   private
@@ -35,6 +37,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:answer_text, :question_id, :correct?)
+    params.require(:answer).permit(:answer_text, :question_id, :correct)
   end
 end
