@@ -45,17 +45,12 @@
      </td>
       <td>
         <% if answer.correct == 0 %>
-          <%= link_to "correct", set_correct_answer_question_path %>
+          <%= link_to "correct", {:controller => "questions", :action => "set_correct_answer", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %>
         <% else %>
-          <%= link_to "incorrect", set_incorrect_answer_question_path %>
+          <%= link_to "incorrect", {:controller => "questions", :action => "set_incorrect_answer", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %>
         <% end %>
         
         <%= link_to "delete", answer, method: :delete %>
-        
-       <!--  <%#= link_to(edit_answer_path(answer), class: "btn btn-small btn-warning") do %>
-          Edit
-            <i class="icon-edit icon-white"></i>
-        <#% end %> -->
       </td>
     </tr> 
   </tbody>

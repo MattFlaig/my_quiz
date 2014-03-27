@@ -1,4 +1,5 @@
 class QuestionsController < ApplicationController
+require 'pry'
 before_action :require_login
 before_action :set_categories
 
@@ -7,7 +8,8 @@ before_action :set_categories
   end
 
   def show
-    @question = Question.find(params[:id])
+    @question = current_user.questions.find(params[:id])
+    #@answer = Answer.find(params[:id])
   end
 
   def new
@@ -26,24 +28,29 @@ before_action :set_categories
   end
 
   def set_correct_answer
-    @question = Question.find(params[:id])
-    @answer = Answer.find(params[:id])
+    set_question_and_answer
     @answer.correct = 1
-    @answer.save
-    flash[:notice] = "The answer status of answer text #{@answer.answer_text.to_s} was set to correct"
-    render 'show'
+    save_answer_and_render
   end
 
   def set_incorrect_answer
-    @question = Question.find(params[:id])
-    @answer = Answer.find(params[:id])
+    set_question_and_answer
     @answer.correct = 0
-    @answer.save
-    flash[:notice] = "The answer status of answer text #{@answer.answer_text.to_s} was set to incorrect"
-    render 'show'
+    save_answer_and_render
   end
 
   private
+
+  def set_question_and_answer
+    @answer = Answer.find(params[:answer][:id])
+    @question = current_user.questions.find(params[:id])
+  end
+
+  def save_answer_and_render
+    @answer.save
+    flash[:notice] = "The status of the answer with text '#{@answer.answer_text}' was changed"
+    render 'show'
+  end
 
   def question_params
     params.require(:question).permit(:question_text, :category_id)
