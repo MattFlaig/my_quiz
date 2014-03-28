@@ -19,7 +19,9 @@ MyQuiz::Application.routes.draw do
 
   get 'start_quiz/:id', to: 'quizzes#start', as: 'start_quiz'
   get 'question', to: 'quizzes#question'
+  post 'question', to: 'quizzes#question'
   post 'answer', to: 'quizzes#answer'
+  get 'score', to: 'quizzes#score'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -19,12 +19,7 @@ class QuizzesController < ApplicationController
   end
 
   def create
-    @category = Category.find_by_id(params[:category_id])
-    @quiz = current_user.quizzes.build(quiz_params)
-    @quiz.category = @category
-    @questions = @category.questions
-    @quiz.questions = @questions
-    #binding.pry
+    set_variables_for_create
 
     if @quiz.save
       flash[:notice] = "Your quiz was succesfully created!"
@@ -42,41 +37,49 @@ class QuizzesController < ApplicationController
   end
 
   def question
-    @quiz = Quiz.find(params[:id])
-    @length_of_quiz = @quiz.questions.length
-    @number = session[:current_question]
-    @current_question = @quiz.questions[session[:current_question]]
-
-    if @number >= @length_of_quiz
-      redirect_to :action => "end"
-    end
-
-    
-    
-    #session[:question] = @question
-    #session[:answers] = @answers
+    prepare_quiz
+    # if @number >= @length_of_quiz
+    #   redirect_to :action => "end"
+    # end
+    @answers = @current_question.answers
+    session[:current_question] = @number
   end
 
   def answer
-    @quiz = Quiz.find(params[:id])
-    @length_of_quiz = @quiz.questions.length
-    @number = session[:current_question]
-    @current_question = @quiz.questions[session[:current_question]]
-    
-    if params = @current_question.answer.correct == 1
+    prepare_quiz
+    @answer_choice = Answer.find_by_id(params[:answer])
+    if @answer_choice.correct == 1
+      flash[:notice] = "Congratulations, this answer was correct!"
       session[:correct_answers] += 1
+    else
+      flash[:danger] = "Sorry, your answer was wrong!"
     end
-
     session[:current_question] += 1
-    redirect_to :action => "question", :id => @quiz.id
-    binding.pry
   end
 
-  def end
+  def score
+    prepare_quiz
+    @score = session[:correct_answers]
+    @percent = ((@score.to_f / @length_of_quiz.to_f) * 100).to_i
   end
 
   
   private
+
+  def prepare_quiz
+    @quiz = Quiz.find(params[:id])
+    @length_of_quiz = @quiz.questions.length
+    @number = session[:current_question]
+    @current_question = @quiz.questions[session[:current_question]]
+  end
+
+  def set_variables_for_create
+    @category = Category.find_by_id(params[:category_id])
+    @quiz = current_user.quizzes.build(quiz_params)
+    @quiz.category = @category
+    @questions = @category.questions
+    @quiz.questions = @questions
+  end
 
   def set_categories
     @categories = Category.all
