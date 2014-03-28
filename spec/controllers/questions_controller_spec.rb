@@ -86,33 +86,50 @@ describe QuestionsController do
     end
 
     describe "GET set_correct_answer" do
-      before do
-        amanda = Fabricate(:user)
-        set_current_user(amanda)
-        category = Fabricate(:category)
-        question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
-        answer = Fabricate(:answer, correct: 0, question_id: question.id)
-        get :set_correct_answer, {id: question.id, answer: {id: answer.id, answer_text: answer.answer_text}}
-      end     
+      context "setting the variables" do   
       
-      it "should set the question variable" do
-        expect(assigns(:question)).to eq(Question.first)
-      end
+        it "should set the question variable" do # something seems wrong here
+          amanda = Fabricate(:user)
+          set_current_user(amanda)
+          category = Fabricate(:category)
+          question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
+          answer = Fabricate(:answer, correct: 0, question_id: question.id)
+          get :set_correct_answer, {id: question.id, answer: {id: answer.id, answer_text: answer.answer_text}}
+          expect(assigns(:question)).to eq(question)
+        end
         
-      it "should set the answer variable" do
-        expect(assigns(:answer)).to eq(Answer.first)
+        it "should set the answer variable" do
+          amanda = Fabricate(:user)
+          set_current_user(amanda)
+          category = Fabricate(:category)
+          question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
+          answer = Fabricate(:answer, correct: 0, question_id: question.id)
+          get :set_correct_answer, {id: question.id, answer: {id: answer.id, answer_text: answer.answer_text}}
+          expect(assigns(:answer)).to eq(answer)
+        end
       end
 
-      it "should change the status from incorrect to correct" do
-        expect(Answer.first.correct).to eq(1)
-      end
+      context "modifying and saving the answer object" do
+        before do
+          amanda = Fabricate(:user)
+          set_current_user(amanda)
+          category = Fabricate(:category)
+          question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
+          answer = Fabricate(:answer, correct: 0, question_id: question.id)
+          get :set_correct_answer, {id: question.id, answer: {id: answer.id, answer_text: answer.answer_text}}
+        end
 
-      it "should set a flash notice that status was changed" do
-        expect(flash[:notice]).not_to be_blank
-      end
+        it "should change the status from incorrect to correct" do
+          expect(Answer.first.correct).to eq(1)
+        end
 
-      it "should render show" do
-        expect(response).to render_template :show
+        it "should set a flash notice that status was changed" do
+          expect(flash[:notice]).not_to be_blank
+        end
+
+        it "should render show" do
+          expect(response).to render_template :show
+        end
       end
     end
       

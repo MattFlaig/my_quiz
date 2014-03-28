@@ -1,7 +1,7 @@
 <div class= "center hero-unit">
 <% if logged_in? %>
   <h1> Quizzes </h1>
-  <h2> Welcome, <%= current_user.username %>! </h2>
+  <h2> To take a quiz, simply click on the blue button below! </h2>
 <% else %>
   <h1> Welcome to my quiz app!</h1> <h2>To create your own quizzes, please <%= link_to "login", login_path %> or <%= link_to "register", new_user_path %></h2>
 <% end %>
@@ -14,20 +14,20 @@
         <li>
           <h2><%= link_to quiz.quiz_name, quiz_path(quiz) %></h2>
           <h3>created by <%= quiz.user.username %> </h3>
-          </br>
           <% if quiz.user == current_user %>
-            <%= link_to(quiz, method: :delete, class: "btn btn-small btn-danger") do %> 
-            Delete
-              <i class="icon-trash icon-white"></i>
-            <% end %>
+            <%= link_to "(Delete)", quiz, method: :delete %> 
 
-            <%= link_to(edit_quiz_path(quiz), class: "btn btn-small btn-warning") do %>
-            Edit
-              <i class="icon-edit icon-white"></i>
-            <% end %>
+            <%= link_to "(Edit)", edit_quiz_path(quiz)%>
           <% end %>
         </li>
+        </br>
+        <%= link_to(start_quiz_path(quiz.id), class: "btn btn-large btn-primary") do %>
+        Start Quiz!
+        <% end %>
       </ul>
+
+      
+
     </div>
 <% end %>
 
