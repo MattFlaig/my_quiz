@@ -19,7 +19,7 @@
             <ul class="dropdown-menu">
               <li>
                 <% @categories.each do |category| %>
-                  <%= link_to category.category_name, {:controller => "quizzes", :action => "new", :category => category.id} %>
+                  <%= link_to category.category_name, {:controller => "quizzes", :action => "new", :category => category.id, :questions => category.questions} %>
                 <% end %>
               </li>
             </ul>

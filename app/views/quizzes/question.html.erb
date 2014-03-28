@@ -1,0 +1,30 @@
+<div class= "center hero-unit">
+<h1><%= @quiz.quiz_name %></h1>
+<h2><%= @quiz.description %></h2>
+<h3>Question <%= @number + 1 %> of <%= @length_of_quiz %></h3>
+
+</br>
+<%= form_tag({:controller => "quizzes",:action => "answer"}) do %>
+
+  <h3>Question: </h3>
+  <p>
+  <%= @current_question.question_text %>
+  </p>
+  </br>
+  <h3>Answers: 
+  <p>
+    <% @answers.each do |answer| %>
+    <%= radio_button_tag(:answer, answer.id) %>
+    <%= label_tag("answer", answer.answer_text) %>
+  </p>
+  <% end %>
+  </h3>
+
+  <div>
+  <%= hidden_field_tag(:id, @quiz.id) %>
+  </div>
+<div>
+   <%= submit_tag "Check!", class: "btn btn-large btn-success" %>
+</div>
+<% end %>
+</div>

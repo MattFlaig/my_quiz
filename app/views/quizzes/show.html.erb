@@ -1,0 +1,44 @@
+<div class= "center hero-unit">
+<h1><%= @quiz.quiz_name %></h1>
+<h2></h2>
+</br>
+<p>
+  <strong class= "grey">Category: </strong>
+  <small><%= @quiz.category.category_name %></small>
+</p>
+<p>
+  <strong class= "grey">Description: </strong>
+  <small><%= @quiz.description %></small>
+</p>
+</br>
+  <% @quiz.questions.each_with_index do |question, index| %>
+  <div class= "well">
+  
+      <ul>
+        <li>
+          <% if counter == index + 1 %>
+          <h2><%= quiz.question %></h2>
+
+            <% question.answers.each do |answer| %>
+            <div class="form-inline">
+              <h3>
+                <%= label_tag "answer[][answer_text]", answer.answer_text  %>
+                <%= check_box_tag "answer[][answer_text]", answer.answer_text %> 
+              </h3>
+            </div>
+            <% end %>
+            
+          <% end %>
+        </li>
+      </ul>
+  </div> 
+  <% end %>
+
+  </br>
+  <div>  
+  
+    <!-- <div class="float" >
+      <%#= back_to_quiz_list %>
+    </div>  -->      
+  </div>
+</div>
