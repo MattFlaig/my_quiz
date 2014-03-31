@@ -11,20 +11,23 @@
   <%= @current_question.question_text %>
   </p>
   </br>
+
   <h3>Answers: 
-  <p>
-    <% @answers.each do |answer| %>
-    <%= radio_button_tag(:answer, answer.id) %>
-    <%= label_tag("answer", answer.answer_text) %>
-  </p>
-  <% end %>
+    <p>
+      <% @answers.each do |answer| %>
+        <%= radio_button_tag(:answer, answer.id) %>
+        <%= label_tag("answer", answer.answer_text) %>
+      <% end %>
+      <!-- There are no answers specified for this question. You can do so <%#= link_to "here", {:controller => "answers", :action => "new", :question => @question} %> -->
+    </p>
   </h3>
 
-  <div>
-  <%= hidden_field_tag(:id, @quiz.id) %>
-  </div>
-<div>
-   <%= submit_tag "Check!", class: "btn btn-large btn-success" %>
-</div>
+    <div>
+      <%= hidden_field_tag(:id, @quiz.id) %>
+    </div>
+    <div>
+      <%= submit_tag "Check!", class: "btn btn-large btn-success" %>
+    </div>
+
 <% end %>
 </div>

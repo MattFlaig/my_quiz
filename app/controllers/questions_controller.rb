@@ -17,7 +17,7 @@ before_action :set_categories
   end
 
   def create
-    @question = current_user.questions.build(question_params)
+    @question = current_user.questions.build(params[:question])
     
     if @question.save
       flash[:notice] = "Question succesfully created!"

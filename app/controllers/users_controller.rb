@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
+    @user = User.new(params[:user])
     if @user.save
       flash[:notice] = "Your user account has been created!"
       redirect_to login_path

@@ -10,7 +10,7 @@ class AnswersController < ApplicationController
 
   def create
     @question = current_user.questions.find_by_id(params[:question_id])
-    @answer = Answer.new(answer_params)
+    @answer = Answer.new(params[:answer])
     @answer.question = @question
     
     if @answer.save
