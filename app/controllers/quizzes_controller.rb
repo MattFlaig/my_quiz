@@ -2,7 +2,7 @@ class QuizzesController < ApplicationController
   require 'pry'
 
   before_action :set_categories 
-  before_action :require_login , except: [:index]
+  before_action :require_login , except: [:index, :start, :question, :answer, :score]
 
   def index
     @quizzes = Quiz.all
@@ -11,7 +11,7 @@ class QuizzesController < ApplicationController
   def new
     @quiz = current_user.quizzes.build
     @category = Category.find_by_id(params[:category])
-    @questions = Question.all
+    #@questions = Question.all
   end
 
   def show
@@ -27,22 +27,31 @@ class QuizzesController < ApplicationController
     else
       render 'new'
     end
+    #binding.pry
   end
 
   def start
     @quiz = Quiz.find(params[:id])
-    session[:current_question] = 0
-    session[:correct_answers] = 0
-    redirect_to :action => "question", :id => @quiz.id
+    unless @quiz.questions.empty? 
+      session[:current_question] = 0
+      session[:correct_answers] = 0
+      redirect_to :action => "question", :id => @quiz.id
+    else
+      flash[:danger] = "Please create some questions for this quiz first!"
+      redirect_to root_path
+    end
   end
 
   def question
     prepare_quiz
-    # if @number >= @length_of_quiz
-    #   redirect_to :action => "end"
-    # end
-    @answers = @current_question.answers
-    session[:current_question] = @number
+    unless @answers = nil
+      @answers = @current_question.answers
+      session[:current_question] = @number
+    else
+      flash[:danger] = "Please create some answers for this question first!"
+      redirect_to root_path
+    end
+    
   end
 
   def answer
@@ -75,10 +84,10 @@ class QuizzesController < ApplicationController
 
   def set_variables_for_create
     @category = Category.find_by_id(params[:category_id])
-    @quiz = current_user.quizzes.build(quiz_params)
+    @quiz = current_user.quizzes.build(params[:quiz])
     @quiz.category = @category
-    @questions = @category.questions
-    @quiz.questions = @questions
+    #@questions = @category.questions
+    #@quiz.questions = @questions.find_by_id(params[:questions])
   end
 
   def set_categories
@@ -93,6 +102,6 @@ class QuizzesController < ApplicationController
   end
 
   def quiz_params
-    params.require(:quiz).permit(:quiz_name, :description, :category_id)
+    params.require(:quiz).permit(:quiz_name, :description, :category_id, :question_ids)
   end
 end
