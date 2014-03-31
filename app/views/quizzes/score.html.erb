@@ -1,7 +1,21 @@
 <div class= "center hero-unit">
 <h1>Your Score</h1>
-You took the following quiz: <%= @quiz.quiz_name %>.</br> You answered <%= @score %> questions correctly which amounts to <%= @percent %>%! What do you want to do now?
-</br>
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th colspan="1"> Quiz </th>
+      <th colspan="1"> Correct answers </th>
+      <th colspan="1"> Percentage </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= @quiz.quiz_name %></td>
+      <td><%=  @score %>/<%= @length_of_quiz %></td>
+      <td><%= @percent %>%</td>
+    </tr> 
+  </tbody>
+</table>  
 </br>
 <div>
   <%= link_to(quizzes_path, class: "btn btn-large btn-primary") do %>

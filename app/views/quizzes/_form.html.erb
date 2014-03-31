@@ -25,14 +25,18 @@
     <div>
       <%= hidden_field_tag 'category_id', @category.id %>
     </div>
-    <div class="control-group">
-    <%= f.label :possible_questions_for_this_category %>
-      <div class="controls">
-          <%= f.select :question_ids, @category.questions.collect {|x| [x.question_text, x.id]}, {}, :multiple => true %>
+    <% if @category.questions.empty? %>
+      You don't have created any questions for this category yet. </br> Go <%= link_to "here", new_question_path %> to do so and come back then!
+    <% else %>
+      <div class="control-group">
+      <%= f.label :possible_questions_for_this_category %>
+        <div class="controls">
+            <%= f.select :question_ids, @category.questions.collect {|x| [x.question_text, x.id]}, {}, :multiple => true %>
+        </div>
       </div>
-    </div>
-    <div>
-      <%= f.submit class: "btn btn-large btn-success" %>
-    </div>
+      <div>
+        <%= f.submit class: "btn btn-large btn-success" %>
+      </div>  
+   <% end %>
   </fieldset>
 <% end %>

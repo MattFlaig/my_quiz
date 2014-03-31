@@ -2,7 +2,7 @@ class QuizzesController < ApplicationController
   require 'pry'
 
   before_action :set_categories 
-  before_action :require_login , except: [:index]
+  before_action :require_login , except: [:index, :start, :question, :answer, :score]
 
   def index
     @quizzes = Quiz.all
@@ -38,9 +38,6 @@ class QuizzesController < ApplicationController
 
   def question
     prepare_quiz
-    # if @number >= @length_of_quiz
-    #   redirect_to :action => "end"
-    # end
     @answers = @current_question.answers
     session[:current_question] = @number
   end
