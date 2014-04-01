@@ -32,16 +32,25 @@ class QuizzesController < ApplicationController
 
   def edit
     @quiz = current_user.quizzes.find(params[:id])
+    @category = @quiz.category
   end
 
   def update
     @quiz = current_user.quizzes.find(params[:id])
+    @category = @quiz.category
     if @quiz.update_attributes(params[:quiz])
       flash[:notice] = "Your quiz was updated!"
       redirect_to quizzes_path
     else
       render 'edit'
     end
+  end
+
+  def destroy
+    @quiz = current_user.quizzes.find(params[:id])
+    @quiz.destroy
+    flash[:notice] = "Your quiz has been deleted!"
+    redirect_to quizzes_path
   end
 
 
