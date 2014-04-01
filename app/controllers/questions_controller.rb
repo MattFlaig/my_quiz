@@ -41,6 +41,13 @@ before_action :set_categories
     end
   end
 
+  def destroy
+    @question = current_user.questions.find(params[:id])
+    @question.destroy
+    flash[:notice] = "Your question has been deleted!"
+    redirect_to questions_path
+  end
+
   def set_correct_answer
     set_question_and_answer
     @answer.correct = 1
@@ -66,9 +73,9 @@ before_action :set_categories
     render 'show'
   end
 
-  def question_params
-    params.require(:question).permit(:question_text, :category_id)
-  end
+  # def question_params
+  #   params.require(:question).permit(:question_text, :category_id)
+  # end
 
   def require_login
     unless logged_in?
