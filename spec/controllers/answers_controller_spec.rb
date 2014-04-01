@@ -21,12 +21,13 @@ describe AnswersController do
     end
 
     context "with valid input" do
+      let(:category) { Fabricate(:category) }
+      let(:amanda) { Fabricate(:user)}
+      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+
       before do
-        amanda = Fabricate(:user)
-        set_current_user(amanda)
-        category = Fabricate(:category)
-        question = Fabricate(:question, user_id: amanda.id, category_id: category.id)
-        post :create, answer: {answer_text: "Blabla!", question_id: question.id, correct: 0}
+        set_current_user(amanda) 
+        post :create, {id: 1, answer_text: "Blabla!", question_id: question.id, correct: 0 }
       end
 
       it "creates a new answer" do
@@ -38,17 +39,18 @@ describe AnswersController do
       end
 
       it "redirects to questions index page" do
-        expect(response).to redirect_to questions_path#(id: question_id)
+        expect(response).to redirect_to question_path(Answer.first.question_id)
       end
     end
 
     context "with invalid input" do
+      let(:category) { Fabricate(:category) }
+      let(:amanda) { Fabricate(:user)}
+      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+
       before do
-        amanda = Fabricate(:user)
-        set_current_user(amanda)
-        category = Fabricate(:category)
-        question = Fabricate(:question, user_id: amanda.id, category_id: category.id)
-        post :create, answer: {question_id: question.id, correct: 0}
+        set_current_user(amanda) 
+        post :create, {id: 1, question_id: question.id, correct: 0 }
       end
 
       it "does not create the answer" do
@@ -63,7 +65,6 @@ describe AnswersController do
 
   describe "PUT update" do
     context "with valid input" do
-
       let(:category) { Fabricate(:category) }
       let(:amanda) { Fabricate(:user)}
       let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
@@ -84,6 +85,26 @@ describe AnswersController do
 
       it "redirects to questions index" do
         expect(response).to redirect_to question_path(answer.question_id)
+      end
+    end
+
+    context "with invalid input" do
+      let(:category) { Fabricate(:category) }
+      let(:amanda) { Fabricate(:user)}
+      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:answer) { Fabricate(:answer, question_id: question.id, correct: 0) }
+
+      before do
+        set_current_user(amanda) 
+        patch :update, {id: answer.id, answer: {answer_text: " ", question_id: question.id} }
+      end
+
+      it "does not update the answer" do
+        expect(Answer.first.answer_text).to eq(answer.answer_text)
+      end
+
+      it "renders the edit template" do 
+        expect(response).to render_template :edit
       end
     end
   end

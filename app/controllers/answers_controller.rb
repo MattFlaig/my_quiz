@@ -10,16 +10,16 @@ class AnswersController < ApplicationController
 
   def create
     @question = current_user.questions.find_by_id(params[:question_id])
-    @answer = Answer.new(params[:answer])
+    @answer = Answer.new(params)
     @answer.question = @question
     
     if @answer.save
       flash[:notice] = "A new answer was created!"
-      redirect_to questions_path
+      redirect_to question_path(@answer.question_id)
     else
       render 'new'
     end
-    
+    #binding.pry
   end
 
   def edit
