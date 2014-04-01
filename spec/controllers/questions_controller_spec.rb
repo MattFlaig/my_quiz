@@ -112,7 +112,30 @@ describe QuestionsController do
           expect(response).to redirect_to questions_path
         end
       end
-    end
+
+      context "with invalid input" do
+      
+        it_behaves_like "requires login" do
+          let(:action) { put :update, id: 1 }
+        end
+        
+        before do
+          amanda = Fabricate(:user)
+          set_current_user(amanda)
+          category = Fabricate(:category)
+          question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
+          put :update, {id: question.id, question: {question_text: " "}}
+        end
+
+        it "does not update the question" do
+          expect(Question.first.question_text).not_to eq(" ")
+        end
+
+        it "renders the edit template" do
+          expect(response).to render_template :edit
+        end
+      end
+    end      
 
     describe "GET set_correct_answer" do
       context "setting the variables" do   
