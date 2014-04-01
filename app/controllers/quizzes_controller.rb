@@ -30,6 +30,31 @@ class QuizzesController < ApplicationController
     #binding.pry
   end
 
+  def edit
+    @quiz = current_user.quizzes.find(params[:id])
+    @category = @quiz.category
+  end
+
+  def update
+    @quiz = current_user.quizzes.find(params[:id])
+    @category = @quiz.category
+    if @quiz.update_attributes(params[:quiz])
+      flash[:notice] = "Your quiz was updated!"
+      redirect_to quizzes_path
+    else
+      render 'edit'
+    end
+  end
+
+  def destroy
+    @quiz = current_user.quizzes.find(params[:id])
+    @quiz.destroy
+    flash[:notice] = "Your quiz has been deleted!"
+    redirect_to quizzes_path
+  end
+
+
+
   def start
     @quiz = Quiz.find(params[:id])
     unless @quiz.questions.empty? 
@@ -44,7 +69,7 @@ class QuizzesController < ApplicationController
 
   def question
     prepare_quiz
-    unless @answers = nil
+    unless @answers == nil
       @answers = @current_question.answers
       session[:current_question] = @number
     else
@@ -101,7 +126,7 @@ class QuizzesController < ApplicationController
     end
   end
 
-  def quiz_params
-    params.require(:quiz).permit(:quiz_name, :description, :category_id, :question_ids)
-  end
+  # def quiz_params
+  #   params.require(:quiz).permit(:quiz_name, :description, :category_id, :question_ids)
+  # end
 end

@@ -16,8 +16,8 @@
           <h3>created by <%= quiz.user.username %> </h3>
           <% if quiz.user == current_user %>
             <%= link_to "(Delete)", quiz, method: :delete %> 
-
-            <%= link_to "(Edit)", edit_quiz_path(quiz)%>
+            <%= link_to "(Edit)", edit_quiz_path(quiz) %>
+            <%#= link_to "(Edit)", {:controller => "quizzes", :action => "edit", :category => quiz.category.id, quiz: quiz.id } %>
           <% end %>
         </li>
         </br>

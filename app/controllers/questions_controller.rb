@@ -9,7 +9,7 @@ before_action :set_categories
 
   def show
     @question = current_user.questions.find(params[:id])
-    #@answer = Answer.find(params[:id])
+    @answer = Answer.find_by_id(params[:answer])
   end
 
   def new
@@ -25,6 +25,27 @@ before_action :set_categories
     else
       render 'new'
     end
+  end
+
+  def edit
+    @question = current_user.questions.find(params[:id])
+  end
+
+  def update
+    @question = current_user.questions.find(params[:id])
+    if @question.update_attributes(params[:question])
+      flash[:notice] = "Your question was updated!"
+      redirect_to questions_path
+    else
+      render 'edit'
+    end
+  end
+
+  def destroy
+    @question = current_user.questions.find(params[:id])
+    @question.destroy
+    flash[:notice] = "Your question has been deleted!"
+    redirect_to questions_path
   end
 
   def set_correct_answer
@@ -52,9 +73,9 @@ before_action :set_categories
     render 'show'
   end
 
-  def question_params
-    params.require(:question).permit(:question_text, :category_id)
-  end
+  # def question_params
+  #   params.require(:question).permit(:question_text, :category_id)
+  # end
 
   def require_login
     unless logged_in?

@@ -10,30 +10,34 @@ class AnswersController < ApplicationController
 
   def create
     @question = current_user.questions.find_by_id(params[:question_id])
-    @answer = Answer.new(params[:answer])
+    @answer = Answer.new(params)
     @answer.question = @question
     
     if @answer.save
       flash[:notice] = "A new answer was created!"
-      redirect_to questions_path
+      redirect_to question_path(@answer.question_id)
     else
       render 'new'
     end
     #binding.pry
   end
 
-  # def set_correct
-  #   @answer = Answer.find(params[:id])
-  #   @answer.correct = 1
-  #   @answer.save
-  #   redirect_to questions_path
-  # end
+  def edit
+    @question = current_user.questions.find(params[:id])
+    @answer = Answer.find(params[:answer][:id])
+  end
 
-  # def set_incorrect
-  #   @answer = Answer.find(params[:id])
-  #   @answer.correct = 0
-  #   @answer.save
-  # end
+  def update
+    @question = current_user.questions.find_by_id(params[:question_id])
+    @answer = Answer.find(params[:id])
+    if @answer.update_attributes(params[:answer])
+      flash[:notice] = "Your answer was updated!"
+      redirect_to question_path(@answer.question_id)
+    else
+      render 'edit'
+    end
+    #binding.pry
+  end
 
   private
 
@@ -48,7 +52,7 @@ class AnswersController < ApplicationController
     end
   end
 
-  def answer_params
-    params.require(:answer).permit(:answer_text, :question_id, :correct)
-  end
+  # def answer_params
+  #   params.require(:answer).permit(:answer_text, :question_id, :correct)
+  # end
 end
