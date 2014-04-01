@@ -82,11 +82,12 @@ describe QuizzesController do
   end
 
   describe "PUT update" do
-    it_behaves_like "requires login" do
-      let(:action) { put :update, id: 1 }
-    end
 
     context "with valid input" do
+      it_behaves_like "requires login" do
+        let(:action) { put :update, id: 1 }
+      end
+      
       before do
         amanda = Fabricate(:user)
         set_current_user(amanda)
@@ -107,8 +108,29 @@ describe QuizzesController do
       it "redirects to quizzes index" do
         expect(response).to redirect_to quizzes_path
       end
+    end
 
+    context "with invalid input" do
+      it_behaves_like "requires login" do
+        let(:action) { put :update, id: 1 }
+      end
       
+      before do
+        amanda = Fabricate(:user)
+        set_current_user(amanda)
+        category = Fabricate(:category)
+        question = Fabricate(:question, category_id: category.id)
+        quiz = Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id)
+        put :update, {id: quiz.id, quiz: {quiz_name: " "}}
+      end
+
+      it "does not update the quiz" do
+        expect(Quiz.first.quiz_name).not_to eq(" ")
+      end
+
+      it "renders the edit template" do
+        expect(response).to render_template :edit
+      end
     end
   end
 
