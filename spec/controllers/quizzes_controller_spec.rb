@@ -4,8 +4,10 @@ describe QuizzesController do
   describe "GET index" do
     it "sets the @quizzes variable" do
       category = Fabricate(:category)
-      quiz_1 = Fabricate(:quiz, category_id: category.id)
-      quiz_2 = Fabricate(:quiz, category_id: category.id)
+      question_1 = Fabricate(:question, category_id: category.id)
+      question_2 = Fabricate(:question, category_id: category.id)
+      quiz_1 = Fabricate(:quiz, category_id: category.id, question_ids: [question_1.id, question_2.id])
+      quiz_2 = Fabricate(:quiz, category_id: category.id, question_ids: [question_1.id, question_2.id])
       get :index
       expect(assigns[:quizzes]).to match_array([quiz_1, quiz_2])
     end
@@ -36,7 +38,7 @@ describe QuizzesController do
   describe "POST create" do
 
       it_behaves_like "requires login" do
-        let(:action) {post :create, user_id: 1, category_id: 1}
+        let(:action) {post :create, user_id: 1, category_id: 1, question_id: 1}
       end
 
     context "with valid input" do
@@ -78,5 +80,37 @@ describe QuizzesController do
       end
     end
   end
+
+  describe "PUT update" do
+    it_behaves_like "requires login" do
+      let(:action) { put :update, id: 1 }
+    end
+
+    context "with valid input" do
+      before do
+        amanda = Fabricate(:user)
+        set_current_user(amanda)
+        category = Fabricate(:category)
+        question = Fabricate(:question, category_id: category.id)
+        quiz = Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id)
+        put :update, {id: quiz.id, quiz: {quiz_name: "Somewhat changed quiz"}}
+      end
+
+      it "updates the quiz" do
+        expect(Quiz.first.quiz_name).to eq("Somewhat changed quiz")      
+      end
+
+      it "sets a flash success message" do
+        expect(flash[:notice]).to eq("Your quiz was updated!")
+      end
+
+      it "redirects to quizzes index" do
+        expect(response).to redirect_to quizzes_path
+      end
+
+      
+    end
+  end
+
   
 end  

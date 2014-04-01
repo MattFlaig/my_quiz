@@ -30,6 +30,22 @@ class QuizzesController < ApplicationController
     #binding.pry
   end
 
+  def edit
+    @quiz = current_user.quizzes.find(params[:id])
+  end
+
+  def update
+    @quiz = current_user.quizzes.find(params[:id])
+    if @quiz.update_attributes(params[:quiz])
+      flash[:notice] = "Your quiz was updated!"
+      redirect_to quizzes_path
+    else
+      render 'edit'
+    end
+  end
+
+
+
   def start
     @quiz = Quiz.find(params[:id])
     unless @quiz.questions.empty? 
