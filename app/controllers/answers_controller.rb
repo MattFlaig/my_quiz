@@ -19,6 +19,23 @@ class AnswersController < ApplicationController
     else
       render 'new'
     end
+    
+  end
+
+  def edit
+    @question = current_user.questions.find(params[:id])
+    @answer = Answer.find(params[:answer][:id])
+  end
+
+  def update
+    @question = current_user.questions.find_by_id(params[:question_id])
+    @answer = Answer.find(params[:id])
+    if @answer.update_attributes(params[:answer])
+      flash[:notice] = "Your answer was updated!"
+      redirect_to question_path(@answer.question_id)
+    else
+      render 'edit'
+    end
     #binding.pry
   end
 
@@ -35,7 +52,7 @@ class AnswersController < ApplicationController
     end
   end
 
-  def answer_params
-    params.require(:answer).permit(:answer_text, :question_id, :correct)
-  end
+  # def answer_params
+  #   params.require(:answer).permit(:answer_text, :question_id, :correct)
+  # end
 end

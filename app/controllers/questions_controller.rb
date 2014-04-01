@@ -9,7 +9,7 @@ before_action :set_categories
 
   def show
     @question = current_user.questions.find(params[:id])
-    #@answer = Answer.find(params[:id])
+    @answer = Answer.find_by_id(params[:answer])
   end
 
   def new

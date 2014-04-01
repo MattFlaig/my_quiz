@@ -69,7 +69,7 @@ class QuizzesController < ApplicationController
 
   def question
     prepare_quiz
-    unless @answers = nil
+    unless @answers == nil
       @answers = @current_question.answers
       session[:current_question] = @number
     else

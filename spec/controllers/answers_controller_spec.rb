@@ -37,7 +37,7 @@ describe AnswersController do
         expect(flash[:notice]).not_to be_blank
       end
 
-      it "redirects to question show page" do
+      it "redirects to questions index page" do
         expect(response).to redirect_to questions_path#(id: question_id)
       end
     end
@@ -60,4 +60,32 @@ describe AnswersController do
       end
     end
   end
+
+  describe "PUT update" do
+    context "with valid input" do
+
+      let(:category) { Fabricate(:category) }
+      let(:amanda) { Fabricate(:user)}
+      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:answer) { Fabricate(:answer, question_id: question.id, correct: 0) }
+
+      before do
+        set_current_user(amanda) 
+        patch :update, {id: answer.id, answer: {answer_text: "Different answer text", question_id: question.id} }
+      end
+      
+      it "updates the answer" do
+        expect(Answer.first.answer_text).to eq("Different answer text")
+      end
+
+      it "sets a notice" do
+        expect(flash[:notice]).not_to be_blank
+      end
+
+      it "redirects to questions index" do
+        expect(response).to redirect_to question_path(answer.question_id)
+      end
+    end
+  end
+
 end
