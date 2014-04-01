@@ -27,6 +27,20 @@ before_action :set_categories
     end
   end
 
+  def edit
+    @question = current_user.questions.find(params[:id])
+  end
+
+  def update
+    @question = current_user.questions.find(params[:id])
+    if @question.update_attributes(params[:question])
+      flash[:notice] = "Your question was updated!"
+      redirect_to questions_path
+    else
+      render 'edit'
+    end
+  end
+
   def set_correct_answer
     set_question_and_answer
     @answer.correct = 1

@@ -85,6 +85,35 @@ describe QuestionsController do
       end
     end
 
+    describe "PUT update" do
+      context "with valid input" do
+
+        it_behaves_like "requires login" do
+          let(:action) { put :update, id: 1 }
+        end
+        
+        before do
+          amanda = Fabricate(:user)
+          set_current_user(amanda)
+          category = Fabricate(:category)
+          question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
+          put :update, {id: question.id, question: {question_text: "Another question text"}}
+        end
+
+        it "updates the question" do
+          expect(Question.first.question_text).to eq("Another question text")      
+        end
+
+        it "sets a flash success message" do
+          expect(flash[:notice]).to eq("Your question was updated!")
+        end
+
+        it "redirects to questions index" do
+          expect(response).to redirect_to questions_path
+        end
+      end
+    end
+
     describe "GET set_correct_answer" do
       context "setting the variables" do   
       
