@@ -16,6 +16,7 @@ class QuizzesController < ApplicationController
 
   def show
     @quiz = Quiz.find(params[:id])
+    #@question = Question.find(params[:id])
   end
 
   def create
@@ -52,8 +53,6 @@ class QuizzesController < ApplicationController
     flash[:notice] = "Your quiz has been deleted!"
     redirect_to quizzes_path
   end
-
-
 
   def start
     @quiz = Quiz.find(params[:id])
