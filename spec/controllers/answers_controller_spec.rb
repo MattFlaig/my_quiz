@@ -132,8 +132,8 @@ describe AnswersController do
       expect(flash[:notice]).not_to be_empty
     end
 
-    # it "redirects to show question path" do 
-    #   expect(response).to redirect_to question_path(answer.question_id)
-    # end
+    it "redirects to show question path" do 
+      expect(response).to redirect_to question_path(answer.question_id)
+    end
   end
 end
