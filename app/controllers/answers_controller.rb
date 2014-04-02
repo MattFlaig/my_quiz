@@ -36,7 +36,14 @@ class AnswersController < ApplicationController
     else
       render 'edit'
     end
-    #binding.pry
+  end
+
+  def destroy
+    @question = current_user.questions.find_by_id(params[:question_id])
+    @answer = Answer.find(params[:id])
+    @answer.destroy
+    flash[:notice] = "Answer has been deleted!"
+    redirect_to question_path(@answer.question_id)
   end
 
   private
