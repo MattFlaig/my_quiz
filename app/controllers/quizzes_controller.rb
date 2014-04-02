@@ -11,7 +11,6 @@ class QuizzesController < ApplicationController
   def new
     @quiz = current_user.quizzes.build
     @category = Category.find_by_id(params[:category])
-    #@questions = Question.all
   end
 
   def show
@@ -110,8 +109,6 @@ class QuizzesController < ApplicationController
     @category = Category.find_by_id(params[:category_id])
     @quiz = current_user.quizzes.build(params[:quiz])
     @quiz.category = @category
-    #@questions = @category.questions
-    #@quiz.questions = @questions.find_by_id(params[:questions])
   end
 
   def set_categories
@@ -125,7 +122,4 @@ class QuizzesController < ApplicationController
     end
   end
 
-  # def quiz_params
-  #   params.require(:quiz).permit(:quiz_name, :description, :category_id, :question_ids)
-  # end
 end
