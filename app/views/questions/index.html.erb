@@ -11,8 +11,8 @@
               <li>
                 <%= question.question_text %>
                 </br>
-                <%= link_to "delete", question, method: :delete %>
-                <%= link_to "edit", edit_question_path(question)%>
+                <%= link_to "delete", question, method: :delete %> /
+                <%= link_to "edit", edit_question_path(question)%> /
                 <%= link_to "show", question_path(question) %> 
               </li>
             </ul>

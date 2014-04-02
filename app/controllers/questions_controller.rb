@@ -73,10 +73,6 @@ before_action :set_categories
     render 'show'
   end
 
-  # def question_params
-  #   params.require(:question).permit(:question_text, :category_id)
-  # end
-
   def require_login
     unless logged_in?
       flash[:danger] = "Please login first!"

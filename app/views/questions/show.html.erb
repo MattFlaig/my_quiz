@@ -7,12 +7,17 @@
     <tr>
       <th colspan="1"> Question Text </th>
       <th colspan="1"> Question Category </th>
+      <th colspan="1"> Actions </th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><%= @question.question_text %></td>
-      <td><%=  @question.category.category_name %></td>
+      <td><%= @question.category.category_name %></td>
+      <td>
+        <%= link_to "edit", edit_question_path(@question) %> /
+        <%= link_to "delete", @question, method: :delete %>
+      </td>
     </tr> 
   </tbody>
 </table>  
@@ -45,11 +50,11 @@
      </td>
       <td>
         <% if answer.correct == 0 %>
-          <%= link_to "correct", {:controller => "questions", :action => "set_correct_answer", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %>
+          <%= link_to "correct", {:controller => "questions", :action => "set_correct_answer", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %> /
         <% else %>
-          <%= link_to "incorrect", {:controller => "questions", :action => "set_incorrect_answer", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %>
+          <%= link_to "incorrect", {:controller => "questions", :action => "set_incorrect_answer", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %> /
         <% end %>
-        <%= link_to "edit", {:controller => "answers", :action => "edit", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %>
+        <%= link_to "edit", {:controller => "answers", :action => "edit", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %> /
         <%= link_to "delete", answer, method: :delete %>
       </td>
     </tr> 
@@ -57,12 +62,16 @@
   <% end %>
 </table>  
 </br>
-  <div>
   <h2>
     If you want more answers, you can add some 
     <%= link_to "here", {:controller => "answers", :action => "new", :question => @question} %> . 
-  </h2>    
-    <div class="float" >
+  </h2> 
+  <div> 
+    <%= link_to(quizzes_path, class: "btn btn-large btn-primary") do %>
+      Back to quizzes
+    <% end %>
+  
+        <div class="float" >
       <%= back_to_questions_list %>
     </div>
   </div>
