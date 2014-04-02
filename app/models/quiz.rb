@@ -10,6 +10,14 @@ class Quiz < ActiveRecord::Base
 
   #validates :question_ids, presence: true
   validates :quiz_name, :description, presence: true
+  validate :questions_present?
 
+  private
+
+  def questions_present?
+    if question_ids.empty?
+      errors.add(:questions, "can't be blank")
+    end
+  end
 end
 

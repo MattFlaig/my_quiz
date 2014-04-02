@@ -67,13 +67,13 @@ class QuizzesController < ApplicationController
 
   def question
     prepare_quiz
-    unless @answers == nil
+    #unless @answers == empty?
       @answers = @current_question.answers
       session[:current_question] = @number
-    else
-      flash[:danger] = "Please create some answers for this question first!"
-      redirect_to root_path
-    end
+    #else
+      #flash[:danger] = "Please create some answers for this question first!"
+      #redirect_to root_path
+    #end
     
   end
 
