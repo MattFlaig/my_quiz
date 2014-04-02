@@ -52,15 +52,16 @@ describe QuizzesController do
 
   describe "POST create" do
       it_behaves_like "requires login" do
-        let(:action) {post :create, user_id: 1, category_id: 1, question_id: 1}
+        let(:action) {post :create, user_id: 1, category_id: 1, question_ids: 1}
       end
 
     context "with valid input" do
+      let(:category) { Fabricate(:category) }
+      let(:amanda) { Fabricate(:user)}
+      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+
       before do
-        amanda = Fabricate(:user)
-        set_current_user(amanda)
-        category = Fabricate(:category)
-        question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
+        set_current_user(amanda) 
         post :create, quiz: Fabricate.attributes_for(:quiz), user_id: amanda.id, category_id: category.id, question_ids: question.id
       end
  
@@ -69,7 +70,7 @@ describe QuizzesController do
       end
 
       it "associates quiz and category" do
-        expect(Quiz.first.category_id).not_to be_nil
+        expect(Quiz.first.category_id).to eq(category.id)
       end
 
       it "sets a success message that the quiz was created" do

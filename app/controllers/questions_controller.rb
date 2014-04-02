@@ -8,7 +8,7 @@ before_action :set_categories
   end
 
   def show
-    @question = current_user.questions.find(params[:id])
+    @question = Question.find(params[:id])
     @answer = Answer.find_by_id(params[:answer])
   end
 
@@ -28,7 +28,7 @@ before_action :set_categories
   end
 
   def edit
-    @question = current_user.questions.find(params[:id])
+    @question = Question.find(params[:id])
   end
 
   def update
