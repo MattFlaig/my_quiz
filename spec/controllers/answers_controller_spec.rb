@@ -109,4 +109,31 @@ describe AnswersController do
     end
   end
 
+  describe "DELETE destroy" do
+    let(:category) { Fabricate(:category) }
+      let(:amanda) { Fabricate(:user)}
+      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:answer) { Fabricate(:answer, question_id: question.id, correct: 0) }
+
+      before do
+        set_current_user(amanda) 
+        delete :destroy, {id: answer.id}
+      end
+  
+    it_behaves_like "requires login" do
+      let(:action) { delete :destroy, id: 1 }
+    end
+
+    it "deletes the answer" do
+      expect(Answer.first).to be_nil
+    end
+
+    it "sets a notice that the answer has been deleted" do
+      expect(flash[:notice]).not_to be_empty
+    end
+
+    it "redirects to show question path" do 
+      expect(response).to redirect_to question_path(answer.question_id)
+    end
+  end
 end

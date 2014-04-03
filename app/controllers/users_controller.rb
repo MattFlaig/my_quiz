@@ -1,6 +1,13 @@
 class UsersController < ApplicationController
+before_action :set_categories, only: [:show]
+before_action :require_login, only: [:show]
+
   def new
     @user = User.new
+  end
+
+  def show
+    @user = User.find(params[:id])
   end
 
   def create
@@ -13,9 +20,19 @@ class UsersController < ApplicationController
     end 
   end
 
-  private
+  
 
-  def user_params
-    params.require(:user).permit(:username, :email,:password, :password_confirmation, :password_digest)
+  private
+  
+  def set_categories
+    @categories = Category.all
   end
+
+  def require_login
+    unless logged_in?
+      flash[:danger] = "Please login first!"
+      redirect_to login_path
+    end
+  end
+
 end

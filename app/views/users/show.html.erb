@@ -1,0 +1,77 @@
+<div class= "center hero-unit">
+  <h1><%= @user.username %>'s profile</h1>
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#quiz" data-toggle="tab">Quizzes</a></li>
+  <li><a href="#question" data-toggle="tab">Questions</a></li>
+  <li><a href="#reviews" data-toggle="tab">Reviews</a></li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane active" id="quiz">
+  </br>
+  <h3>Quizzes created by <%= @user.username %></h3>
+  </br>
+  <% if @user.quizzes %>
+    <% @user.quizzes.each do |quiz| %>
+    
+      <div class= "well">
+        <ul>
+          <li>
+            <h2><%= link_to quiz.quiz_name, quiz_path(quiz) %></h2>
+            <% if quiz.user == current_user %>
+              <%= link_to "(Delete)", quiz, method: :delete %> 
+              <%= link_to "(Edit)", edit_quiz_path(quiz) %>
+            <% end %>
+          </li>
+          </br>
+          <%= link_to(start_quiz_path(quiz.id), class: "btn btn-large btn-primary") do %>
+          Start Quiz!
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  <% else %>
+    <h3>
+      You don't have created any Quizzes yet. To do so, please go <%= link_to "here", new_quiz_path %>!
+      </h3>   
+    <% end %>
+  </div>   
+ 
+  <div class="tab-pane" id="question">
+  </br>
+  <h3>Quiz Questions created by <%= @user.username %></h3>
+  </br>
+    <% if @user.questions %>
+      <% @user.questions.each do |question| %>
+
+        <div class= "well">
+          <ul>
+            <li>
+              <%= question.question_text %>
+              </br>
+              <% if question.user == current_user %>
+                <%= link_to "delete", question, method: :delete %> /
+                <%= link_to "edit", edit_question_path(question)%> /
+                <%= link_to "show", question_path(question) %> 
+              <% end %>
+            </li>
+          </ul>
+        </div>
+      <% end %>
+
+    <% else %>
+      <h3>
+        <%= current_user.username %> does not have any questions yet! 
+      </h3>
+   
+    <% end %>
+  </div>
+
+  <div class="tab-pane" id="reviews">
+
+
+  </div>
+</div>
+
+</div>
+    

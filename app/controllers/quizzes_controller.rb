@@ -11,11 +11,11 @@ class QuizzesController < ApplicationController
   def new
     @quiz = current_user.quizzes.build
     @category = Category.find_by_id(params[:category])
-    #@questions = Question.all
   end
 
   def show
     @quiz = Quiz.find(params[:id])
+    #@question = Question.find(params[:id])
   end
 
   def create
@@ -31,7 +31,7 @@ class QuizzesController < ApplicationController
   end
 
   def edit
-    @quiz = current_user.quizzes.find(params[:id])
+    @quiz = Quiz.find(params[:id])
     @category = @quiz.category
   end
 
@@ -53,8 +53,6 @@ class QuizzesController < ApplicationController
     redirect_to quizzes_path
   end
 
-
-
   def start
     @quiz = Quiz.find(params[:id])
     unless @quiz.questions.empty? 
@@ -69,13 +67,13 @@ class QuizzesController < ApplicationController
 
   def question
     prepare_quiz
-    unless @answers == nil
+    #unless @answers == empty?
       @answers = @current_question.answers
       session[:current_question] = @number
-    else
-      flash[:danger] = "Please create some answers for this question first!"
-      redirect_to root_path
-    end
+    #else
+      #flash[:danger] = "Please create some answers for this question first!"
+      #redirect_to root_path
+    #end
     
   end
 
@@ -111,8 +109,6 @@ class QuizzesController < ApplicationController
     @category = Category.find_by_id(params[:category_id])
     @quiz = current_user.quizzes.build(params[:quiz])
     @quiz.category = @category
-    #@questions = @category.questions
-    #@quiz.questions = @questions.find_by_id(params[:questions])
   end
 
   def set_categories
@@ -126,7 +122,4 @@ class QuizzesController < ApplicationController
     end
   end
 
-  # def quiz_params
-  #   params.require(:quiz).permit(:quiz_name, :description, :category_id, :question_ids)
-  # end
 end

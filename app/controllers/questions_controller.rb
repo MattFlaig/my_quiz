@@ -8,7 +8,7 @@ before_action :set_categories
   end
 
   def show
-    @question = current_user.questions.find(params[:id])
+    @question = Question.find(params[:id])
     @answer = Answer.find_by_id(params[:answer])
   end
 
@@ -28,7 +28,7 @@ before_action :set_categories
   end
 
   def edit
-    @question = current_user.questions.find(params[:id])
+    @question = Question.find(params[:id])
   end
 
   def update
@@ -72,10 +72,6 @@ before_action :set_categories
     flash[:notice] = "The status of the answer with text '#{@answer.answer_text}' was changed"
     render 'show'
   end
-
-  # def question_params
-  #   params.require(:question).permit(:question_text, :category_id)
-  # end
 
   def require_login
     unless logged_in?

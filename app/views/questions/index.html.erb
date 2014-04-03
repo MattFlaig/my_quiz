@@ -1,6 +1,7 @@
 <div class= "center hero-unit">
+<h1>Quiz Questions by Category</h1>
   <% unless @questions.empty? %>
-    <h1>Quiz Questions by Category</h1>
+    
     <% @categories.each do |category| %>
     </br>
       <h2><%= category.category_name %></h2>
@@ -11,18 +12,9 @@
               <li>
                 <%= question.question_text %>
                 </br>
-                <%= link_to(question, method: :delete, class: "btn btn-small btn-danger") do %> 
-                Delete
-                  <i class="icon-trash icon-white"></i>
-                <% end %>
-                <%= link_to(edit_question_path(question), class: "btn btn-small btn-warning") do %>
-                Edit
-                    <i class="icon-edit icon-white"></i>
-                <% end %>
-                <%= link_to(question_path(question), class: "btn btn-small btn-success") do %> 
-                Show
-                  <i class="icon-search icon-white"></i>
-                <% end %>
+                <%= link_to "delete", question, method: :delete %> /
+                <%= link_to "edit", edit_question_path(question)%> /
+                <%= link_to "show", question_path(question) %> 
               </li>
             </ul>
           </div>

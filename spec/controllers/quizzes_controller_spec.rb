@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pry'
 
 describe QuizzesController do
   describe "GET index" do
@@ -14,7 +15,6 @@ describe QuizzesController do
   end
 
   describe "GET new" do
-
     it_behaves_like "requires login" do
       let(:action) {get :new}
     end
@@ -35,29 +35,43 @@ describe QuizzesController do
     end
   end
 
-  describe "POST create" do
+  describe "GET show" do
+    it_behaves_like "requires login" do
+      let(:action) {get :show, id: 1}
+    end
 
-      it_behaves_like "requires login" do
-        let(:action) {post :create, user_id: 1, category_id: 1, question_id: 1}
-      end
+    it "sets the quiz variable" do
+      amanda = Fabricate(:user)
+      set_current_user(amanda)
+      category = Fabricate(:category)
+      question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
+      quiz = Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id)
+      get :show, id: quiz.id
+      expect(assigns(:quiz)).to eq(quiz)
+    end
+  end
+
+  describe "POST create" do
+    it_behaves_like "requires login" do
+      let(:action) {post :create, user_id: 1, category_id: 1, question_ids: 1}
+    end 
 
     context "with valid input" do
+      let(:amanda) { Fabricate(:user)}
+      let(:category) { Fabricate(:category) }
+      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
 
       before do
-        amanda = Fabricate(:user)
-        set_current_user(amanda)
-        category = Fabricate(:category)
-        question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
-        post :create, quiz: Fabricate.attributes_for(:quiz), user_id: amanda.id, category_id: category.id, question_ids: question.id
+        set_current_user(amanda) 
+        post :create, quiz: Fabricate.attributes_for(:quiz, user_id: amanda.id, category_id: category.id, question_ids: question.id)
       end
- 
-
+      
       it "creates a new quiz for the current user" do
         expect(Quiz.count).to eq(1)
       end
 
       it "associates quiz and category" do
-        expect(Quiz.first.category_id).not_to be_nil
+        expect(assigns(:category)).to eq(Quiz.first.category)
       end
 
       it "sets a success message that the quiz was created" do
@@ -88,7 +102,6 @@ describe QuizzesController do
   end
 
   describe "PUT update" do
-
     context "with valid input" do
       it_behaves_like "requires login" do
         let(:action) { put :update, id: 1 }
@@ -166,6 +179,4 @@ describe QuizzesController do
       expect(response).to redirect_to quizzes_path
     end
   end
-
-  
 end  

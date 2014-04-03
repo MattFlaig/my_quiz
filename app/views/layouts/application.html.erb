@@ -13,8 +13,8 @@
       <ul class= "nav pull-right">
         
         <% if logged_in? %>
-
-           <li class="dropdown">
+          <li><%= link_to "Home", root_path %></li>
+          <li class="dropdown">
             <a href="#" data-toggle="dropdown" class="dropdown-toggle"> New Quiz <b class="caret"></b><a/>
             <ul class="dropdown-menu">
               <li>
@@ -24,7 +24,6 @@
               </li>
             </ul>
           </li>
-
           <li class="dropdown">
             <a href="#" data-toggle="dropdown" class="dropdown-toggle"> Quiz Elements <b class="caret"></b><a/>
             <ul class="dropdown-menu">
@@ -39,16 +38,18 @@
               </li> 
             </ul>
           </li>
-
-          <li><%= link_to "Home", root_path %></li>
-          <li><%= link_to "Logout", logout_path %></li>
+          <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle"> Welcome, <%= current_user.username %> <b class="caret"></b><a/>
+            <ul class="dropdown-menu">
+              <li><%= link_to "User Profile", user_path(current_user.id) %></li>
+              <li><%= link_to "Logout", logout_path %></li>
+            </ul>
+          </li>
         <% else %>
           <li><%= link_to "Home", root_path %></li>
           <li><%= link_to "Register", new_user_path %></li>
           <li><%= link_to "Login", login_path %></li>
         <% end %>
-          
-
       </ul>
     </div>
   </div>
