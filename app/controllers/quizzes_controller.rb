@@ -3,6 +3,7 @@ class QuizzesController < ApplicationController
 
   before_action :set_categories 
   before_action :require_login , except: [:index, :start, :question, :answer, :score]
+  before_action :restrict_access, only: [:edit, :update, :delete]
 
   def index
     @quizzes = Quiz.all
@@ -15,6 +16,9 @@ class QuizzesController < ApplicationController
 
   def show
     @quiz = Quiz.find(params[:id])
+    @reviews = @quiz.reviews
+    #@user = @reviews.user
+    #@user = @quiz.reviews.user
     #@question = Question.find(params[:id])
   end
 
@@ -22,7 +26,7 @@ class QuizzesController < ApplicationController
     set_variables_for_create
 
     if @quiz.save
-      flash[:notice] = "Your quiz was succesfully created!"
+      flash.now[:notice] = "Your quiz was succesfully created!"
       redirect_to quizzes_path
     else
       render 'new'
@@ -39,7 +43,7 @@ class QuizzesController < ApplicationController
     @quiz = current_user.quizzes.find(params[:id])
     @category = @quiz.category
     if @quiz.update_attributes(params[:quiz])
-      flash[:notice] = "Your quiz was updated!"
+      flash.now[:notice] = "Your quiz was updated!"
       redirect_to quizzes_path
     else
       render 'edit'
@@ -49,7 +53,7 @@ class QuizzesController < ApplicationController
   def destroy
     @quiz = current_user.quizzes.find(params[:id])
     @quiz.destroy
-    flash[:notice] = "Your quiz has been deleted!"
+    flash.now[:notice] = "Your quiz has been deleted!"
     redirect_to quizzes_path
   end
 
@@ -60,7 +64,7 @@ class QuizzesController < ApplicationController
       session[:correct_answers] = 0
       redirect_to :action => "question", :id => @quiz.id
     else
-      flash[:danger] = "Please create some questions for this quiz first!"
+      flash.now[:danger] = "Please create some questions for this quiz first!"
       redirect_to root_path
     end
   end
@@ -81,10 +85,10 @@ class QuizzesController < ApplicationController
     prepare_quiz
     @answer_choice = Answer.find_by_id(params[:answer])
     if @answer_choice.correct == 1
-      flash[:notice] = "Congratulations, this answer was correct!"
+      flash.now[:notice] = "Congratulations, this answer was correct!"
       session[:correct_answers] += 1
     else
-      flash[:danger] = "Sorry, your answer was wrong!"
+      flash.now[:danger] = "Sorry, your answer was wrong!"
     end
     session[:current_question] += 1
   end
@@ -117,8 +121,16 @@ class QuizzesController < ApplicationController
 
   def require_login
     unless logged_in?
-      flash[:danger] = "Please login first!"
+      flash.now[:danger] = "Please login first!"
       redirect_to login_path
+    end
+  end
+
+  def restrict_access
+    @quiz = Quiz.find(params[:id])
+    if current_user != @quiz.user
+      flash[:danger] = "You are not allowed to do that!"
+      redirect_to quizzes_path
     end
   end
 

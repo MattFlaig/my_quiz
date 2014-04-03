@@ -4,6 +4,7 @@ class Quiz < ActiveRecord::Base
 
   has_many :quiz_settings
   has_many :questions, through: :quiz_settings
+  has_many :reviews
 
   belongs_to :category
   belongs_to :user
