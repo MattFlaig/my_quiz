@@ -3,6 +3,7 @@ class QuizzesController < ApplicationController
 
   before_action :set_categories 
   before_action :require_login , except: [:index, :start, :question, :answer, :score]
+  before_action :restrict_access, only: [:edit, :update, :delete]
 
   def index
     @quizzes = Quiz.all
@@ -122,6 +123,14 @@ class QuizzesController < ApplicationController
     unless logged_in?
       flash.now[:danger] = "Please login first!"
       redirect_to login_path
+    end
+  end
+
+  def restrict_access
+    @quiz = Quiz.find(params[:id])
+    if current_user != @quiz.user
+      flash[:danger] = "You are not allowed to do that!"
+      redirect_to quizzes_path
     end
   end
 
