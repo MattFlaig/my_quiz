@@ -10,7 +10,9 @@ MyQuiz::Application.routes.draw do
   resources :categories
   resources :users, only:[:new, :create, :show]
 
-  resources :quizzes 
+  resources :quizzes do
+    resources :reviews, only: [:create]
+  end
   resources :answers 
   
   get '/login', to: 'sessions#new'

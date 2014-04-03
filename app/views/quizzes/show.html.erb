@@ -1,6 +1,7 @@
 <div class= "center hero-unit">
 <h1>Quiz Details</h1>
 </br>
+<div class="well">
 <h2>Quiz Data:</h2>
 <table class="table table-striped table-bordered table-condensed">
   <thead>
@@ -64,6 +65,49 @@
   </tbody>
 <% end %>
 </table> 
+</div>
+</br>
+<div class="well">
+  <%= form_for [@quiz, Review.new] do |f| %>
+    <fieldset>
+      <h2>Rate this quiz</h2>
+      <%= f.select :rating, options_for_select([10,9,8,7,5,4,3,2,1].map {|number| [pluralize(number, "Star")]}) %>
+      <br/>
+      <h2>Write Review</h2>
+      
+      <%= f.text_area :content, rows: 8, class: "span8" %>
+    </fieldset>
+    </br>
+    <fieldset class="actions clearfix">
+      <%= f.submit class: "btn btn-large btn-success" %>
+      <%= link_to "Cancel", @quiz %>
+    </fieldset>
+    <header>
+      </br>
+      <h2>User Reviews (<%= @reviews.count %>)</h2>
+    </header>
+    
+      <% @reviews.each do |review| %>
+      <ul>
+        <article class="review">
+          <li>
+              <span>Rating: <%= review.rating %> / 10</span>
+              <p>
+                by
+                <%= link_to review.user.username, user_path(review.user_id) %>
+              </p>
+            <div>
+              <p>
+                <%= review.content %>
+              </p>
+            </div>
+          </li>
+        </article>
+      </ul>
+      <% end %>
+    </ul>
+  <% end %>
+</div>
 </br>
   <div>  
     <div class="float" >
