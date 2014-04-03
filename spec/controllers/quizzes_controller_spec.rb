@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pry'
 
 describe QuizzesController do
   describe "GET index" do
@@ -51,26 +52,26 @@ describe QuizzesController do
   end
 
   describe "POST create" do
-      it_behaves_like "requires login" do
-        let(:action) {post :create, user_id: 1, category_id: 1, question_ids: 1}
-      end
+    it_behaves_like "requires login" do
+      let(:action) {post :create, user_id: 1, category_id: 1, question_ids: 1}
+    end 
 
     context "with valid input" do
-      let(:category) { Fabricate(:category) }
       let(:amanda) { Fabricate(:user)}
+      let(:category) { Fabricate(:category) }
       let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
 
       before do
         set_current_user(amanda) 
-        post :create, quiz: Fabricate.attributes_for(:quiz), user_id: amanda.id, category_id: category.id, question_ids: question.id
+        post :create, quiz: Fabricate.attributes_for(:quiz, user_id: amanda.id, category_id: category.id, question_ids: question.id)
       end
- 
+      
       it "creates a new quiz for the current user" do
         expect(Quiz.count).to eq(1)
       end
 
       it "associates quiz and category" do
-        expect(Quiz.first.category_id).to eq(category.id)
+        expect(assigns(:category)).to eq(Quiz.first.category)
       end
 
       it "sets a success message that the quiz was created" do
