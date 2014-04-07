@@ -33,9 +33,6 @@
       <% end %>
     <% else %>
       <%= @user.username %> has not created any quizzes yet. 
-      <% if current_user == @user %>  
-        To do so, please go <%= link_to "here", new_quiz_path %>!
-      <% end %>
     <% end %>
     </div>   
    

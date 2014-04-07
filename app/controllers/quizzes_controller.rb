@@ -91,6 +91,9 @@ class QuizzesController < ApplicationController
     end
   end
 
+  def help
+  end
+
   
   private
 

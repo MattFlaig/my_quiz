@@ -25,6 +25,8 @@ MyQuiz::Application.routes.draw do
   post 'answer', to: 'quizzes#answer'
   get 'score', to: 'quizzes#score'
 
+  get 'help', to: 'quizzes#help', as: 'help'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

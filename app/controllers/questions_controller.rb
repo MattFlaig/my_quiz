@@ -2,6 +2,7 @@ class QuestionsController < ApplicationController
 require 'pry'
 before_action :require_login
 before_action :set_categories
+before_action :restrict_access, except: [:index, :new, :create]
 
   def index
     @questions = current_user.questions.all
@@ -17,7 +18,7 @@ before_action :set_categories
   end
 
   def create
-    @question = Question.new(params[:question])
+    @question = Question.new(params[:question].merge!(:user_id => current_user.id))
     
     if @question.save
       flash[:notice] = "Question succesfully created!"
@@ -77,6 +78,14 @@ before_action :set_categories
     unless logged_in?
       flash[:danger] = "Please login first!"
       redirect_to login_path
+    end
+  end
+
+  def restrict_access
+    @question = Question.find(params[:id])
+    if current_user != @question.user
+      flash[:danger] = "You are not allowed to do that!"
+      redirect_to questions_path
     end
   end
 

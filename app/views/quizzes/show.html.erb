@@ -55,7 +55,7 @@
         </ul>
       <% end %>
       </td>
-      <% if @quiz.user == current_user %>
+      <% if question.user == current_user %>
         <td>
           <%= link_to "details", question_path(question.id)%></br></br>  
           <%= link_to "edit", edit_question_path(question) %>

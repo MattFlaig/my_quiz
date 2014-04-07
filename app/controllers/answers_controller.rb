@@ -2,6 +2,7 @@ class AnswersController < ApplicationController
   require 'pry'
   before_action :set_categories 
   before_action :require_login 
+  before_action :restrict_access, only: [:edit, :update, :delete]
 
   def new
     @answer = Answer.new
@@ -56,6 +57,15 @@ class AnswersController < ApplicationController
     unless logged_in?
       flash[:danger] = "Please login first!"
       redirect_to login_path
+    end
+  end
+
+  def restrict_access
+    @answer = Answer.find(params[:id])
+    @question = @answer.question
+    if current_user != @question.user
+      flash[:danger] = "You are not allowed to do that!"
+      redirect_to questions_path
     end
   end
 
