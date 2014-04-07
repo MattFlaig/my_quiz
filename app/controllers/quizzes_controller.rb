@@ -17,9 +17,6 @@ class QuizzesController < ApplicationController
   def show
     @quiz = Quiz.find(params[:id])
     @reviews = @quiz.reviews
-    #@user = @reviews.user
-    #@user = @quiz.reviews.user
-    #@question = Question.find(params[:id])
   end
 
   def create
@@ -59,41 +56,53 @@ class QuizzesController < ApplicationController
 
   def start
     @quiz = Quiz.find(params[:id])
-    unless @quiz.questions.empty? 
-      session[:current_question] = 0
-      session[:correct_answers] = 0
-      redirect_to :action => "question", :id => @quiz.id
-    else
-      flash.now[:danger] = "Please create some questions for this quiz first!"
-      redirect_to root_path
-    end
+    session[:current_question] = 0
+    session[:correct_answers] = 0
+    session[:wrong_answers] = 0
+    #session[:already_answered] = []
+    redirect_to :action => "question", :id => @quiz.id
   end
 
   def question
-    prepare_quiz
-    #unless @answers == empty?
+    @quiz = Quiz.find(params[:id])
+
+    # if params[:current_question]
+    #  @length_of_quiz = @quiz.questions.length
+    #  go_back_params = params[:current_question].to_i
+    #  @current_question = @quiz.questions[go_back_params]
+    #  @number = go_back_params
+    #  @answers = @quiz.questions[go_back_params].answers
+    #  @answer = Answer.find_by_id(session[:already_answered])
+    # else
+      prepare_quiz
       @answers = @current_question.answers
-      session[:current_question] = @number
-    #else
-      #flash[:danger] = "Please create some answers for this question first!"
-      #redirect_to root_path
     #end
-    
+    session[:current_question] = @number
+    #binding.pry
   end
 
   def answer
+    @quiz = Quiz.find(params[:id])
     prepare_quiz
     @answer_choice = Answer.find_by_id(params[:answer])
-    if @answer_choice.correct == 1
-      flash.now[:notice] = "Congratulations, this answer was correct!"
+    if @answer_choice && @answer_choice.correct == 1
       session[:correct_answers] += 1
-    else
-      flash.now[:danger] = "Sorry, your answer was wrong!"
+    else  
+      session[:wrong_answers] += 1
     end
-    session[:current_question] += 1
+    #session[:already_answered] << params[:answer]
+    #binding.pry
+    
+    if @number+1 < @length_of_quiz
+      session[:current_question] += 1
+      redirect_to :action => "question", :id => @quiz.id
+    else
+      redirect_to :action => "score", :id => @quiz.id
+    end
   end
 
   def score
+    @quiz = Quiz.find(params[:id])
     prepare_quiz
     @score = session[:correct_answers]
     @percent = ((@score.to_f / @length_of_quiz.to_f) * 100).to_i
@@ -103,7 +112,7 @@ class QuizzesController < ApplicationController
   private
 
   def prepare_quiz
-    @quiz = Quiz.find(params[:id])
+    #@quiz = Quiz.find(params[:id])
     @length_of_quiz = @quiz.questions.length
     @number = session[:current_question]
     @current_question = @quiz.questions[session[:current_question]]
@@ -121,7 +130,7 @@ class QuizzesController < ApplicationController
 
   def require_login
     unless logged_in?
-      flash.now[:danger] = "Please login first!"
+      flash[:danger] = "Please login first!"
       redirect_to login_path
     end
   end
