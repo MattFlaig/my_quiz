@@ -13,11 +13,11 @@ before_action :set_categories
   end
 
   def new
-    @question = current_user.questions.build
+    @question = Question.new
   end
 
   def create
-    @question = current_user.questions.build(params[:question])
+    @question = Question.new(params[:question])
     
     if @question.save
       flash[:notice] = "Question succesfully created!"
@@ -32,7 +32,7 @@ before_action :set_categories
   end
 
   def update
-    @question = current_user.questions.find(params[:id])
+    @question = Question.find(params[:id])
     if @question.update_attributes(params[:question])
       flash[:notice] = "Your question was updated!"
       redirect_to questions_path
@@ -42,7 +42,7 @@ before_action :set_categories
   end
 
   def destroy
-    @question = current_user.questions.find(params[:id])
+    @question = Question.find(params[:id])
     @question.destroy
     flash[:notice] = "Your question has been deleted!"
     redirect_to questions_path
@@ -64,12 +64,12 @@ before_action :set_categories
 
   def set_question_and_answer
     @answer = Answer.find(params[:answer][:id])
-    @question = current_user.questions.find(params[:id])
+    @question = Question.find(params[:id])
   end
 
   def save_answer_and_render
     @answer.save
-    flash[:notice] = "The status of the answer with text '#{@answer.answer_text}' was changed"
+    flash.now[:notice] = "The status of the answer with text '#{@answer.answer_text}' was changed"
     render 'show'
   end
 
