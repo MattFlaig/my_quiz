@@ -54,7 +54,7 @@
         <% else %>
           <%= link_to "incorrect", {:controller => "questions", :action => "set_incorrect_answer", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %> /
         <% end %>
-        <%= link_to "edit", {:controller => "answers", :action => "edit", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %> /
+        <%= link_to "edit", edit_question_answer_path(answer.question,answer) %> /
         <%= link_to "delete", answer, method: :delete %>
       </td>
     </tr> 

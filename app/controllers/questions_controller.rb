@@ -2,22 +2,24 @@ class QuestionsController < ApplicationController
 require 'pry'
 before_action :require_login
 before_action :set_categories
+before_action :restrict_access, except: [:index, :new, :create]
+before_action :set_question_by_slug, only: [:edit, :show ]
+
 
   def index
-    @questions = current_user.questions.all
+    @questions = Question.all
   end
 
   def show
-    @question = Question.find(params[:id])
     @answer = Answer.find_by_id(params[:answer])
   end
 
   def new
-    @question = current_user.questions.build
+    @question = Question.new
   end
 
   def create
-    @question = current_user.questions.build(params[:question])
+    @question = Question.new(params[:question].merge!(:user_id => current_user.id))
     
     if @question.save
       flash[:notice] = "Question succesfully created!"
@@ -28,11 +30,9 @@ before_action :set_categories
   end
 
   def edit
-    @question = Question.find(params[:id])
   end
 
   def update
-    @question = current_user.questions.find(params[:id])
     if @question.update_attributes(params[:question])
       flash[:notice] = "Your question was updated!"
       redirect_to questions_path
@@ -42,7 +42,7 @@ before_action :set_categories
   end
 
   def destroy
-    @question = current_user.questions.find(params[:id])
+    @question = Question.find(params[:id])
     @question.destroy
     flash[:notice] = "Your question has been deleted!"
     redirect_to questions_path
@@ -62,14 +62,18 @@ before_action :set_categories
 
   private
 
+  def set_question_by_slug
+    @question = Question.find_by(slug: params[:id])
+  end
+
   def set_question_and_answer
     @answer = Answer.find(params[:answer][:id])
-    @question = current_user.questions.find(params[:id])
+    @question = Question.find(params[:id])
   end
 
   def save_answer_and_render
     @answer.save
-    flash[:notice] = "The status of the answer with text '#{@answer.answer_text}' was changed"
+    flash.now[:notice] = "The status of the answer with text '#{@answer.answer_text}' was changed"
     render 'show'
   end
 
@@ -77,6 +81,14 @@ before_action :set_categories
     unless logged_in?
       flash[:danger] = "Please login first!"
       redirect_to login_path
+    end
+  end
+
+  def restrict_access
+    @question = Question.find_by(slug: params[:id])
+    if current_user != @question.user
+      flash[:danger] = "You are not allowed to do that!"
+      redirect_to questions_path
     end
   end
 

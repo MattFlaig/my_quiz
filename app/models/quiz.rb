@@ -1,5 +1,6 @@
 class Quiz < ActiveRecord::Base
-  require 'pry'
+  include Slugable
+
   attr_accessible :quiz_name, :description, :category_id, :user_id, :question_ids 
 
   has_many :quiz_settings
@@ -9,9 +10,10 @@ class Quiz < ActiveRecord::Base
   belongs_to :category
   belongs_to :user
 
-  #validates :questions, presence: true, associated: true
   validates :quiz_name, :description, presence: true
   validate :questions_present?
+
+  slugable_column :quiz_name
 
   private
 

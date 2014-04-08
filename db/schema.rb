@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140403115338) do
+ActiveRecord::Schema.define(version: 20140408133149) do
 
   create_table "answers", force: true do |t|
     t.string   "answer_text"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20140403115338) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "correct"
+    t.string   "slug"
   end
 
   create_table "categories", force: true do |t|
@@ -33,6 +34,7 @@ ActiveRecord::Schema.define(version: 20140403115338) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.string   "slug"
   end
 
   create_table "quiz_settings", force: true do |t|
@@ -47,6 +49,7 @@ ActiveRecord::Schema.define(version: 20140403115338) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "slug"
   end
 
   create_table "reviews", force: true do |t|
@@ -74,6 +77,7 @@ ActiveRecord::Schema.define(version: 20140403115338) do
     t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "slug"
   end
 
 end

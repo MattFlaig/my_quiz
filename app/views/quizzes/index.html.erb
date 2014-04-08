@@ -13,7 +13,10 @@
       <ul>
         <li>
           <h2><%= link_to quiz.quiz_name, quiz_path(quiz) %></h2>
-          <h3>created by <%= link_to quiz.user.username, user_path(quiz.user.id) %> </h3>
+          <h3>created by  <%#= link_to quiz.user.username, {:controller => "users", :action => "show", :id => quiz.user.slug } %>
+
+
+<%= link_to quiz.user.username, user_path(id: quiz.user.slug) %> </h3>
           <% if quiz.user == current_user %>
             <%= link_to "(Delete)", quiz, method: :delete %> 
             <%= link_to "(Edit)", edit_quiz_path(quiz) %>

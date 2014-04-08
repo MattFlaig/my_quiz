@@ -4,18 +4,19 @@ class QuizzesController < ApplicationController
   before_action :set_categories 
   before_action :require_login , except: [:index, :start, :question, :answer, :score]
   before_action :restrict_access, only: [:edit, :update, :delete]
+  before_action :set_quiz, only: [:edit, :update, :show ]
 
   def index
     @quizzes = Quiz.all
+    #@user = User.find(params[:id])
   end
 
   def new
-    @quiz = current_user.quizzes.build
+    @quiz = Quiz.new
     @category = Category.find_by_id(params[:category])
   end
 
   def show
-    @quiz = Quiz.find(params[:id])
     @reviews = @quiz.reviews
   end
 
@@ -23,7 +24,7 @@ class QuizzesController < ApplicationController
     set_variables_for_create
 
     if @quiz.save
-      flash.now[:notice] = "Your quiz was succesfully created!"
+      flash[:notice] = "Your quiz was succesfully created!"
       redirect_to quizzes_path
     else
       render 'new'
@@ -32,15 +33,13 @@ class QuizzesController < ApplicationController
   end
 
   def edit
-    @quiz = Quiz.find(params[:id])
     @category = @quiz.category
   end
 
   def update
-    @quiz = current_user.quizzes.find(params[:id])
     @category = @quiz.category
     if @quiz.update_attributes(params[:quiz])
-      flash.now[:notice] = "Your quiz was updated!"
+      flash[:notice] = "Your quiz was updated!"
       redirect_to quizzes_path
     else
       render 'edit'
@@ -48,51 +47,73 @@ class QuizzesController < ApplicationController
   end
 
   def destroy
-    @quiz = current_user.quizzes.find(params[:id])
+    @quiz = Quiz.find(params[:id])
     @quiz.destroy
-    flash.now[:notice] = "Your quiz has been deleted!"
+    flash[:notice] = "Your quiz has been deleted!"
     redirect_to quizzes_path
   end
 
   def start
-    @quiz = Quiz.find(params[:id])
-    session[:current_question] = 0
-    session[:correct_answers] = 0
-    session[:wrong_answers] = 0
-    #session[:already_answered] = []
+    start_variables_for_quiz
     redirect_to :action => "question", :id => @quiz.id
   end
 
   def question
-    @quiz = Quiz.find(params[:id])
-
-    # if params[:current_question]
-    #  @length_of_quiz = @quiz.questions.length
-    #  go_back_params = params[:current_question].to_i
-    #  @current_question = @quiz.questions[go_back_params]
-    #  @number = go_back_params
-    #  @answers = @quiz.questions[go_back_params].answers
-    #  @answer = Answer.find_by_id(session[:already_answered])
-    # else
-      prepare_quiz
-      @answers = @current_question.answers
-    #end
+    prepare_quiz
+    @answers = @current_question.answers
     session[:current_question] = @number
-    #binding.pry
+    if @answers.empty? || @answers.length < 2
+      flash[:danger] = "There are not enough answers specified for question #{@current_question.question_text} Please create some more!"
+      redirect_to question_path(id: @current_question.id)
+    end
   end
 
   def answer
-    @quiz = Quiz.find(params[:id])
     prepare_quiz
     @answer_choice = Answer.find_by_id(params[:answer])
     if @answer_choice && @answer_choice.correct == 1
       session[:correct_answers] += 1
-    else  
-      session[:wrong_answers] += 1
     end
-    #session[:already_answered] << params[:answer]
-    #binding.pry
-    
+    manage_redirect
+  end
+
+  def score
+    prepare_quiz
+    @score = session[:correct_answers]
+    @percent = ((@score.to_f / @length_of_quiz.to_f) * 100).to_i
+    if @percent >= 80
+      flash.now[:notice] = "Congratulations! This was very good!"
+    elsif  @percent < 79 && @percent != 0
+      flash.now[:notice] = "Not bad!"
+    else
+      flash.now[:danger] = "It seems you need more practice."
+    end
+  end
+
+  def help
+  end
+
+  
+  private
+
+  def set_quiz
+    @quiz = Quiz.find_by(slug: params[:id])
+  end
+
+  def start_variables_for_quiz
+    @quiz = Quiz.find(params[:id])
+    session[:current_question] = 0
+    session[:correct_answers] = 0
+  end
+
+  def prepare_quiz
+    @quiz = Quiz.find(params[:id])
+    @length_of_quiz = @quiz.questions.length
+    @number = session[:current_question]
+    @current_question = @quiz.questions[session[:current_question]]
+  end
+
+  def manage_redirect
     if @number+1 < @length_of_quiz
       session[:current_question] += 1
       redirect_to :action => "question", :id => @quiz.id
@@ -101,26 +122,9 @@ class QuizzesController < ApplicationController
     end
   end
 
-  def score
-    @quiz = Quiz.find(params[:id])
-    prepare_quiz
-    @score = session[:correct_answers]
-    @percent = ((@score.to_f / @length_of_quiz.to_f) * 100).to_i
-  end
-
-  
-  private
-
-  def prepare_quiz
-    #@quiz = Quiz.find(params[:id])
-    @length_of_quiz = @quiz.questions.length
-    @number = session[:current_question]
-    @current_question = @quiz.questions[session[:current_question]]
-  end
-
   def set_variables_for_create
     @category = Category.find_by_id(params[:category_id])
-    @quiz = current_user.quizzes.build(params[:quiz])
+    @quiz = Quiz.new(params[:quiz].merge!(:user_id => current_user.id))
     @quiz.category = @category
   end
 
@@ -136,7 +140,7 @@ class QuizzesController < ApplicationController
   end
 
   def restrict_access
-    @quiz = Quiz.find(params[:id])
+    @quiz = Quiz.find_by(slug: params[:id])
     if current_user != @quiz.user
       flash[:danger] = "You are not allowed to do that!"
       redirect_to quizzes_path
