@@ -3,10 +3,11 @@ class AnswersController < ApplicationController
   before_action :set_categories 
   before_action :require_login 
   before_action :restrict_access, only: [:new, :create, :edit, :update, :delete]
+  
 
   def new
     @answer = Answer.new
-    @question = Question.find_by_id(params[:question])
+    @question = Question.find_by(slug: params[:question])
   end
 
   def create
@@ -16,7 +17,6 @@ class AnswersController < ApplicationController
     if @answer.save
       flash[:notice] = "A new answer was created!"
       redirect_to question_path(@answer.question.id)
-
     else
       render 'new'
     end
@@ -24,8 +24,8 @@ class AnswersController < ApplicationController
   end
 
   def edit
-    @question = Question.find(params[:id])
-    @answer = Answer.find(params[:answer][:id])
+    @question = Question.find_by_id(params[:question_id])
+    @answer = Answer.find_by(slug: params[:id])
   end
 
   def update
@@ -48,6 +48,7 @@ class AnswersController < ApplicationController
   end
 
   private
+  
 
   def set_categories
     @categories = Category.all
@@ -62,14 +63,14 @@ class AnswersController < ApplicationController
 
   def restrict_access
     if params[:answer]
-      @answer = Answer.find_by_id(params[:answer][:id])
+      @answer = Answer.find_by(slug: params[:id])
       @question = @answer.question
       if current_user != @question.user
         flash[:danger] = "You are not allowed to do that!"
         redirect_to questions_path
       end
     else
-      @question = Question.find_by_id(params[:question])
+      @question = Question.find_by(slug: params[:question_id])
       if current_user != @question.user
         flash[:danger] = "You are not allowed to do that!"
         redirect_to questions_path
