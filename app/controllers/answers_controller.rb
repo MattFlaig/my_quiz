@@ -2,7 +2,7 @@ class AnswersController < ApplicationController
   require 'pry'
   before_action :set_categories 
   before_action :require_login 
-  before_action :restrict_access, only: [:edit, :update, :delete]
+  before_action :restrict_access, only: [:new, :create, :edit, :update, :delete]
 
   def new
     @answer = Answer.new
@@ -11,16 +11,16 @@ class AnswersController < ApplicationController
 
   def create
     @question = Question.find_by_id(params[:question_id])
-    @answer = Answer.new(params[:answer])
-    @answer.question = @question
+    @answer = Answer.new(params[:answer].merge!(:question_id => @question.id))
     
     if @answer.save
       flash[:notice] = "A new answer was created!"
-      redirect_to question_path(@answer.question_id)
+      redirect_to question_path(@answer.question.id)
+
     else
       render 'new'
     end
-    #binding.pry
+    
   end
 
   def edit
@@ -29,7 +29,7 @@ class AnswersController < ApplicationController
   end
 
   def update
-    @question = current_user.questions.find_by_id(params[:question_id])
+    @question = Question.find_by_id(params[:question_id])
     @answer = Answer.find(params[:id])
     if @answer.update_attributes(params[:answer])
       flash[:notice] = "Your answer was updated!"
@@ -40,7 +40,7 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    @question = current_user.questions.find_by_id(params[:question_id])
+    @question = Question.find_by_id(params[:question_id])
     @answer = Answer.find(params[:id])
     @answer.destroy
     flash[:notice] = "Answer has been deleted!"
@@ -61,15 +61,20 @@ class AnswersController < ApplicationController
   end
 
   def restrict_access
-    @answer = Answer.find(params[:id])
-    @question = @answer.question
-    if current_user != @question.user
-      flash[:danger] = "You are not allowed to do that!"
-      redirect_to questions_path
+    if @answer
+      @answer = Answer.find(params[:id])
+      @question = @answer.question
+      if current_user != @question.user
+        flash[:danger] = "You are not allowed to do that!"
+        redirect_to questions_path
+      end
+    else
+      @question = Question.find_by_id(params[:question])
+      if current_user != @question.user
+        flash[:danger] = "You are not allowed to do that!"
+        redirect_to questions_path
+      end
     end
-  end
 
-  # def answer_params
-  #   params.require(:answer).permit(:answer_text, :question_id, :correct)
-  # end
+  end
 end

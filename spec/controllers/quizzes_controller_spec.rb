@@ -16,9 +16,8 @@ describe QuizzesController do
 
   describe "GET new" do
     it_behaves_like "requires login" do
-      let(:action) {get :new}
+      let(:action) {get :new }
     end
-
     it "sets @quiz to be an instance of quiz" do
       amanda = Fabricate(:user)
       set_current_user(amanda)

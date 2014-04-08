@@ -27,7 +27,7 @@ describe AnswersController do
 
       before do
         set_current_user(amanda) 
-        post :create, {id: 1, answer_text: "Blabla!", question_id: question.id, correct: 0 }
+        post :create, { :answer => { id: 1, answer_text: "Hopefully works", correct: 0 }, question_id: question.id }
       end
 
       it "creates a new answer" do
@@ -50,7 +50,7 @@ describe AnswersController do
 
       before do
         set_current_user(amanda) 
-        post :create, {id: 1, question_id: question.id, correct: 0 }
+        post :create, { :answer => { id: 1, correct: 0 }, question_id: question.id }
       end
 
       it "does not create the answer" do

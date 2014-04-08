@@ -1,11 +1,9 @@
 <div class= "center hero-unit">
 <h1><%= @quiz.quiz_name %></h1>
 <h2><%= @quiz.description %></h2>
-
 </br>
   <%= form_tag({:controller => "quizzes",:action => "answer"}) do %>
 
-  
   <h3>Question <%= @number + 1 %> / <%= @length_of_quiz %>:</h3>
   <p>
   <%= @current_question.question_text %>
