@@ -4,18 +4,18 @@ class QuizzesController < ApplicationController
   before_action :set_categories 
   before_action :require_login , except: [:index, :start, :question, :answer, :score]
   before_action :restrict_access, only: [:edit, :update, :delete]
+  before_action :set_quiz, only: [:edit, :update, :show ]
 
   def index
     @quizzes = Quiz.all
   end
 
   def new
-    @quiz = current_user.quizzes.build
+    @quiz = Quiz.new
     @category = Category.find_by_id(params[:category])
   end
 
   def show
-    @quiz = Quiz.find(params[:id])
     @reviews = @quiz.reviews
   end
 
@@ -32,12 +32,10 @@ class QuizzesController < ApplicationController
   end
 
   def edit
-    @quiz = Quiz.find(params[:id])
     @category = @quiz.category
   end
 
   def update
-    @quiz = current_user.quizzes.find(params[:id])
     @category = @quiz.category
     if @quiz.update_attributes(params[:quiz])
       flash[:notice] = "Your quiz was updated!"
@@ -48,7 +46,7 @@ class QuizzesController < ApplicationController
   end
 
   def destroy
-    @quiz = current_user.quizzes.find(params[:id])
+    @quiz = Quiz.find(params[:id])
     @quiz.destroy
     flash[:notice] = "Your quiz has been deleted!"
     redirect_to quizzes_path
@@ -97,6 +95,10 @@ class QuizzesController < ApplicationController
   
   private
 
+  def set_quiz
+    @quiz = Quiz.find_by(slug: params[:id])
+  end
+
   def start_variables_for_quiz
     @quiz = Quiz.find(params[:id])
     session[:current_question] = 0
@@ -121,7 +123,7 @@ class QuizzesController < ApplicationController
 
   def set_variables_for_create
     @category = Category.find_by_id(params[:category_id])
-    @quiz = current_user.quizzes.build(params[:quiz])
+    @quiz = Quiz.new(params[:quiz].merge!(:user_id => current_user.id))
     @quiz.category = @category
   end
 
@@ -137,7 +139,7 @@ class QuizzesController < ApplicationController
   end
 
   def restrict_access
-    @quiz = Quiz.find(params[:id])
+    @quiz = Quiz.find_by(slug: params[:id])
     if current_user != @quiz.user
       flash[:danger] = "You are not allowed to do that!"
       redirect_to quizzes_path

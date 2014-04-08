@@ -61,8 +61,8 @@ class AnswersController < ApplicationController
   end
 
   def restrict_access
-    if @answer
-      @answer = Answer.find(params[:id])
+    if params[:answer]
+      @answer = Answer.find_by_id(params[:answer][:id])
       @question = @answer.question
       if current_user != @question.user
         flash[:danger] = "You are not allowed to do that!"
