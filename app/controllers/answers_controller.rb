@@ -65,17 +65,21 @@ class AnswersController < ApplicationController
     if params[:answer]
       @answer = Answer.find_by(slug: params[:id])
       @question = @answer.question
-      if current_user != @question.user
-        flash[:danger] = "You are not allowed to do that!"
-        redirect_to questions_path
-      end
-    else
+      not_allowed
+    elsif params[:question_id]
       @question = Question.find_by(slug: params[:question_id])
-      if current_user != @question.user
-        flash[:danger] = "You are not allowed to do that!"
-        redirect_to questions_path
-      end
+      not_allowed
+    else
+      @question = Question.find_by(slug: params[:question])
+      not_allowed
     end
 
+  end
+
+  def not_allowed
+    if current_user != @question.user
+      flash[:danger] = "You are not allowed to do that!"
+      redirect_to questions_path
+    end
   end
 end

@@ -20,7 +20,7 @@
       <td><%= @quiz.quiz_name %></td>
       <td><%= @quiz.category.category_name %></td>
       <td><%= @quiz.description %></td>
-      <td><%= link_to @quiz.user.username, user_path(@quiz.user.id) %></td>
+      <td><%= link_to @quiz.user.username, user_path(id: @quiz.user.slug) %></td>
       
       <% if @quiz.user == current_user %>
         <td>
@@ -94,7 +94,7 @@
               <span>Rating: <%= review.rating %> / 10</span>
               <p>
                 by
-                <%= link_to review.user.username, user_path(review.user_id) %>
+                <%= link_to review.user.username, user_path(id: review.user.slug) %>
               </p>
             <div>
               <p>
