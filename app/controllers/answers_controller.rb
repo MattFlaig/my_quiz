@@ -1,17 +1,16 @@
 class AnswersController < ApplicationController
   require 'pry'
-  before_action :set_categories 
-  before_action :require_login 
-  before_action :restrict_access, only: [:new, :create, :edit, :update, :delete]
-  
+  before_action :set_categories
+  before_action :require_login
+  #before_action :restrict_access, only: [:new, :create, :edit, :update, :delete]
+  before_action :set_question, only: [:new]
 
   def new
     @answer = Answer.new
-    @question = Question.find_by(slug: params[:question])
   end
 
   def create
-    @question = Question.find_by_id(params[:question_id])
+    @question = Question.find(params[:question_id])
     @answer = Answer.new(params[:answer].merge!(:question_id => @question.id))
     
     if @answer.save
@@ -24,16 +23,16 @@ class AnswersController < ApplicationController
   end
 
   def edit
-    @question = Question.find_by_id(params[:question_id])
-    @answer = Answer.find_by(slug: params[:id])
+    @question = Question.find(params[:question_id])
+    @answer = Answer.find(params[:id])
   end
 
   def update
-    @question = Question.find_by_id(params[:question_id])
+    @question = Question.find(params[:question_id])
     @answer = Answer.find(params[:id])
     if @answer.update_attributes(params[:answer])
       flash[:notice] = "Your answer was updated!"
-      redirect_to question_path(@answer.question_id)
+      redirect_to question_path(@answer.question.id)
     else
       render 'edit'
     end
@@ -49,6 +48,9 @@ class AnswersController < ApplicationController
 
   private
   
+  def set_question
+    @question = Question.find_by(slug: params[:id])
+  end
 
   def set_categories
     @categories = Category.all
@@ -63,14 +65,14 @@ class AnswersController < ApplicationController
 
   def restrict_access
     if params[:answer]
-      @answer = Answer.find_by(slug: params[:id])
+      @answer = Answer.find(params[:id])
       @question = @answer.question
       not_allowed
     elsif params[:question_id]
-      @question = Question.find_by(slug: params[:question_id])
+      @question = Question.find(params[:question_id])
       not_allowed
     else
-      @question = Question.find_by(slug: params[:question])
+      @question = Question.find(params[:question])
       not_allowed
     end
 
