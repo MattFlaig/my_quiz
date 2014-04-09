@@ -8,6 +8,19 @@ before_action :set_categories
     @category = Category.new
   end
 
+  def create
+    @category = Category.new(params[:category])
+    
+    if @category.save
+      flash[:notice] = "Category succesfully created!"
+      redirect_to root_path
+    else
+      render 'new'
+    end
+  end
+
+
+
 private
 
   def require_login

@@ -10,7 +10,7 @@ before_action :set_question, only: [:show, :edit, :update]
   end
 
   def show
-    @answer = Answer.find_by_id(params[:answer])
+    @answer = Answer.new
   end
 
   def new
@@ -67,14 +67,14 @@ before_action :set_question, only: [:show, :edit, :update]
   end
 
   def set_question_and_answer
-    @answer = Answer.find(params[:answer][:id])
-    @question = Question.find(params[:id])
+    @answer = Answer.find_by(slug: params[:answer])
+    @question = Question.find_by(slug: params[:id])
   end
 
   def save_answer_and_render
     @answer.save
-    flash.now[:notice] = "The status of the answer with text '#{@answer.answer_text}' was changed"
-    render 'show'
+    flash[:notice] = "The status of the answer with text '#{@answer.answer_text}' was changed"
+    redirect_to question_path(@question)
   end
 
   def require_login
@@ -85,7 +85,7 @@ before_action :set_question, only: [:show, :edit, :update]
   end
 
   def restrict_access
-   @question = Question.find(params[:id])
+   @question = Question.find_by(slug: params[:id])
    if current_user != @question.user
      flash[:danger] = "You are not allowed to do that!"
      redirect_to questions_path

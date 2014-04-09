@@ -24,7 +24,7 @@ describe QuestionsController do
       set_current_user(amanda)
       category = Fabricate(:category)
       question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
-      get :show, id: question.id 
+      get :show, id: question
       expect(assigns(:question)).to eq(question)
     end
 
@@ -98,7 +98,7 @@ describe QuestionsController do
         set_current_user(amanda)
         category = Fabricate(:category)
         question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
-        put :update, {id: question.id, question: {question_text: "Another question text"}}
+        put :update, {id: question, question: {question_text: "Another question text"}}
       end
 
       it "updates the question" do
@@ -124,7 +124,7 @@ describe QuestionsController do
         set_current_user(amanda)
         category = Fabricate(:category)
         question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
-        put :update, {id: question.id, question: {question_text: " "}}
+        put :update, {id: question, question: {question_text: " "}}
       end
 
       it "does not update the question" do
@@ -172,7 +172,7 @@ describe QuestionsController do
         category = Fabricate(:category)
         question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
         answer = Fabricate(:answer, correct: 0, question_id: question.id)
-        get :set_correct_answer, {id: question.id, answer: {id: answer.id, answer_text: answer.answer_text}}
+        get :set_correct_answer, {id: question, answer: answer}
         expect(assigns(:question)).to eq(question)
       end
       
@@ -182,19 +182,21 @@ describe QuestionsController do
         category = Fabricate(:category)
         question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
         answer = Fabricate(:answer, correct: 0, question_id: question.id)
-        get :set_correct_answer, {id: question.id, answer: {id: answer.id, answer_text: answer.answer_text}}
+        get :set_correct_answer, {id: question, answer: answer }
         expect(assigns(:answer)).to eq(answer)
       end
     end
 
     context "modifying and saving the answer object" do
+
+      let(:category) { Fabricate(:category) }
+      let(:amanda) { Fabricate(:user)}
+      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:answer) { Fabricate(:answer, question_id: question.id, correct: 0) }
+
       before do
-        amanda = Fabricate(:user)
         set_current_user(amanda)
-        category = Fabricate(:category)
-        question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
-        answer = Fabricate(:answer, correct: 0, question_id: question.id)
-        get :set_correct_answer, {id: question.id, answer: {id: answer.id, answer_text: answer.answer_text}}
+        get :set_correct_answer, {id: question, answer: answer }
       end
 
       it "should change the status from incorrect to correct" do
@@ -205,8 +207,8 @@ describe QuestionsController do
         expect(flash[:notice]).not_to be_blank
       end
 
-      it "should render show" do
-        expect(response).to render_template :show
+      it "should redirect to show path" do
+        expect(response).to redirect_to question_path(id: question)
       end
     end
   end

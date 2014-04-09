@@ -3,53 +3,32 @@ class AnswersController < ApplicationController
   before_action :set_categories
   before_action :require_login
   #before_action :restrict_access, only: [:new, :create, :edit, :update, :delete]
-  before_action :set_question, only: [:new]
-
-  def new
-    @answer = Answer.new
-  end
+  before_action :set_question, only: [:create, :destroy]
 
   def create
-    @question = Question.find(params[:question_id])
-    @answer = Answer.new(params[:answer].merge!(:question_id => @question.id))
+    @answer = Answer.new(params[:answer])
+    @answer.question = @question
     
     if @answer.save
       flash[:notice] = "A new answer was created!"
-      redirect_to question_path(@answer.question.id)
+      redirect_to question_path(@question)
     else
-      render 'new'
-    end
-    
-  end
-
-  def edit
-    @question = Question.find(params[:question_id])
-    @answer = Answer.find(params[:id])
-  end
-
-  def update
-    @question = Question.find(params[:question_id])
-    @answer = Answer.find(params[:id])
-    if @answer.update_attributes(params[:answer])
-      flash[:notice] = "Your answer was updated!"
-      redirect_to question_path(@answer.question.id)
-    else
-      render 'edit'
+      render 'questions/show'
     end
   end
+
 
   def destroy
-    @question = Question.find_by_id(params[:question_id])
-    @answer = Answer.find(params[:id])
+    @answer = Answer.find_by(slug: params[:id])
     @answer.destroy
     flash[:notice] = "Answer has been deleted!"
-    redirect_to question_path(@answer.question_id)
+    redirect_to question_path(@question)
   end
 
   private
   
   def set_question
-    @question = Question.find_by(slug: params[:id])
+    @question = Question.find_by(slug: params[:question_id])
   end
 
   def set_categories

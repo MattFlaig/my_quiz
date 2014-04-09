@@ -50,22 +50,58 @@
      </td>
       <td>
         <% if answer.correct == 0 %>
-          <%= link_to "correct", {:controller => "questions", :action => "set_correct_answer", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %> /
+          <%= link_to "set to correct", {:controller => "questions", :action => "set_correct_answer", :answer =>  answer } %> /
         <% else %>
-          <%= link_to "incorrect", {:controller => "questions", :action => "set_incorrect_answer", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %> /
+          <%= link_to "set to incorrect", {:controller => "questions", :action => "set_incorrect_answer", :answer =>  answer } %> /
         <% end %>
-         <%= link_to "edit", edit_answer_path(id: answer.id, question_id: answer.question_id) %> /
-        <%= link_to "delete", answer, method: :delete %>
+         <%#= link_to "edit", edit_answer_path(id: answer.id, question_id: answer.question_id) %> 
+        <%= link_to "delete", {:controller => "answers", :action => "destroy", id: answer, question_id: answer.question}, method: :delete %>
       </td>
     </tr> 
   </tbody>
   <% end %>
 </table>  
 </br>
-  <h2>
-    If you want more answers, you can add some 
-    <%= link_to "here", new_answer_path(id: @question) %> . 
-  </h2> 
+  <h3>
+    If you want more answers, you can add some here:
+     
+  </h3> 
+
+  <%= form_for [@question, @answer] do |f| %>
+  <% if @answer.errors.any? %>
+    <%= flash[:error] = "There are some errors!" %>
+    <ul>
+      <% @answer.errors.full_messages.each do |msg| %>
+        <li><%=  msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+<div class="well">
+  <fieldset>
+    <div class="control-group">
+    <%= f.label :answer_text %>
+      <div class="controls">
+        <%= f.text_field :answer_text %>
+      </div>
+    </div>
+   
+    <div>
+      <%= hidden_field_tag "question_id", @question.id %>
+    </div>
+    <div>
+      <%= f.hidden_field :correct, :value => 0 %>
+    </div>
+    
+    </br>
+    <div>
+      <%= f.submit class: "btn btn-large btn-success" %>
+    </div>
+  </fieldset>
+<% end %>
+</br>
+</div>
+</br>
   <div> 
     <%= link_to(quizzes_path, class: "btn btn-large btn-primary") do %>
       Back to quizzes

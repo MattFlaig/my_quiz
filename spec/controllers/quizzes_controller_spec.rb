@@ -35,17 +35,19 @@ describe QuizzesController do
   end
 
   describe "GET show" do
+
+    let(:category) { Fabricate(:category) }
+    let(:amanda) { Fabricate(:user)}
+    let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+    let(:quiz) { Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id) }
+
     it_behaves_like "requires login" do
-      let(:action) {get :show, id: 1}
+      let(:action) {get :show, id: quiz}
     end
 
     it "sets the quiz variable" do
-      amanda = Fabricate(:user)
       set_current_user(amanda)
-      category = Fabricate(:category)
-      question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
-      quiz = Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id)
-      get :show, id: quiz.id
+      get :show, id: quiz
       expect(assigns(:quiz)).to eq(quiz)
     end
   end
@@ -102,17 +104,19 @@ describe QuizzesController do
 
   describe "PUT update" do
     context "with valid input" do
-      it_behaves_like "requires login" do
-        let(:action) { put :update, id: 1 }
-      end
+
+      let(:category) { Fabricate(:category) }
+      let(:amanda) { Fabricate(:user)}
+      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:quiz) { Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id) }
       
       before do
-        amanda = Fabricate(:user)
         set_current_user(amanda)
-        category = Fabricate(:category)
-        question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
-        quiz = Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id)
-        put :update, {id: quiz.id, quiz: {quiz_name: "Somewhat changed quiz"}}
+        put :update, {id: quiz, quiz: {quiz_name: "Somewhat changed quiz"}}
+      end
+
+      it_behaves_like "requires login" do
+        let(:action) { put :update, id: quiz }
       end
 
       it "updates the quiz" do
@@ -129,17 +133,19 @@ describe QuizzesController do
     end
 
     context "with invalid input" do
-      it_behaves_like "requires login" do
-        let(:action) { put :update, id: 1 }
-      end
+
+      let(:category) { Fabricate(:category) }
+      let(:amanda) { Fabricate(:user)}
+      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:quiz) { Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id) }
       
       before do
-        amanda = Fabricate(:user)
         set_current_user(amanda)
-        category = Fabricate(:category)
-        question = Fabricate(:question, category_id: category.id)
-        quiz = Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id)
-        put :update, {id: quiz.id, quiz: {quiz_name: " "}}
+        put :update, {id: quiz, quiz: {quiz_name: " "}}
+      end
+
+      it_behaves_like "requires login" do
+        let(:action) { put :update, id: quiz }
       end
 
       it "does not update the quiz" do

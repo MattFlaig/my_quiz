@@ -5,7 +5,7 @@ MyQuiz::Application.routes.draw do
   resources :questions do
     get 'set_correct_answer', :on => :member, :as => 'set_correct_answer'
     get 'set_incorrect_answer', :on => :member, :as => 'set_incorrect_answer'
-    #resources :answers, only: [:edit, :create, :new]
+    resources :answers, only: [:create, :new, :destroy]
   end
 
   resources :categories
@@ -15,7 +15,7 @@ MyQuiz::Application.routes.draw do
     resources :reviews, only: [:create]
   end
 
-  resources :answers , except: [:show] 
+  #resources :answers , except: [:show] 
   
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
