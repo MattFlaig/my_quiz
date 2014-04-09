@@ -54,7 +54,7 @@
         <% else %>
           <%= link_to "incorrect", {:controller => "questions", :action => "set_incorrect_answer", :answer => {:id => answer.id, :answer_text => answer.answer_text} } %> /
         <% end %>
-        <%= link_to "edit", edit_question_answer_path(answer.question,answer) %> /
+         <%= link_to "edit", edit_answer_path(id: answer.id, question_id: answer.question_id) %> /
         <%= link_to "delete", answer, method: :delete %>
       </td>
     </tr> 
@@ -64,7 +64,7 @@
 </br>
   <h2>
     If you want more answers, you can add some 
-    <%= link_to "here", {:controller => "answers", :action => "new", :question => @question} %> . 
+    <%= link_to "here", new_answer_path(id: @question) %> . 
   </h2> 
   <div> 
     <%= link_to(quizzes_path, class: "btn btn-large btn-primary") do %>

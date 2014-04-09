@@ -16,14 +16,14 @@
           <h3>created by  <%#= link_to quiz.user.username, {:controller => "users", :action => "show", :id => quiz.user.slug } %>
 
 
-<%= link_to quiz.user.username, user_path(id: quiz.user.slug) %> </h3>
+<%= link_to quiz.user.username, user_path(quiz.user) %> </h3>
           <% if quiz.user == current_user %>
             <%= link_to "(Delete)", quiz, method: :delete %> 
             <%= link_to "(Edit)", edit_quiz_path(quiz) %>
           <% end %>
         </li>
         </br>
-        <%= link_to(start_quiz_path(quiz.id), class: "btn btn-large btn-primary") do %>
+        <%= link_to(start_quiz_path(quiz), class: "btn btn-large btn-primary") do %>
         Start Quiz!
         <% end %>
       </ul>

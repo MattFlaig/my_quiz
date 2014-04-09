@@ -2,9 +2,8 @@ class QuestionsController < ApplicationController
 require 'pry'
 before_action :require_login
 before_action :set_categories
-before_action :restrict_access, except: [:index, :new, :create]
-before_action :set_question_by_slug, only: [:edit, :show ]
-
+#before_action :restrict_access, except: [:index, :new, :create]
+before_action :set_question, only: [:show, :edit, :update]
 
   def index
     @questions = Question.all
@@ -30,6 +29,7 @@ before_action :set_question_by_slug, only: [:edit, :show ]
   end
 
   def edit
+    #binding.pry
   end
 
   def update
@@ -62,7 +62,7 @@ before_action :set_question_by_slug, only: [:edit, :show ]
 
   private
 
-  def set_question_by_slug
+  def set_question
     @question = Question.find_by(slug: params[:id])
   end
 
@@ -85,14 +85,15 @@ before_action :set_question_by_slug, only: [:edit, :show ]
   end
 
   def restrict_access
-    @question = Question.find_by(slug: params[:id])
-    if current_user != @question.user
-      flash[:danger] = "You are not allowed to do that!"
-      redirect_to questions_path
-    end
+   @question = Question.find(params[:id])
+   if current_user != @question.user
+     flash[:danger] = "You are not allowed to do that!"
+     redirect_to questions_path
+   end
   end
 
   def set_categories
     @categories = Category.all
   end
 end
+

@@ -1,15 +1,14 @@
 class UsersController < ApplicationController
 require 'pry'
 before_action :set_categories, only: [:show]
-#before_action :require_login, only: [:show]
-before_action :set_user, only: [:show]
+before_action :require_login, only: [:show]
 
   def new
     @user = User.new
   end
 
   def show
-   
+    @user = User.find_by(slug: params[:id])
   end
 
   def create
@@ -35,7 +34,4 @@ before_action :set_user, only: [:show]
     end
   end
 
-  def set_user
-    @user = User.find_by(slug: params[:id])
-  end
 end

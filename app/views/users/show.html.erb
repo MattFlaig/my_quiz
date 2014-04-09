@@ -25,7 +25,7 @@
               <% end %>
             </li>
             </br>
-            <%= link_to(start_quiz_path(quiz.id), class: "btn btn-large btn-primary") do %>
+            <%= link_to(start_quiz_path(quiz), class: "btn btn-large btn-primary") do %>
             Start Quiz!
             <% end %>
           </ul>
@@ -75,7 +75,7 @@
           <div class= "well">
             <ul>
               <li>
-                <%= link_to review.quiz.quiz_name, quiz_path(review.quiz.id) %></br>
+                <%= link_to review.quiz.quiz_name, quiz_path(review.quiz) %></br>
                 Text: <%= review.content %></br>
                 Rating: <%= review.rating %> / 10
               </li>

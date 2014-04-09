@@ -19,7 +19,7 @@
     </p>
   </h3>
     <div>
-      <%= hidden_field_tag(:id, @quiz.id) %>
+      <%= hidden_field_tag(:id, @quiz.slug) %>
     </div>
 
     <% if @number + 1 == @length_of_quiz %>

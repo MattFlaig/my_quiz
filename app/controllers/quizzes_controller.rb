@@ -3,12 +3,11 @@ class QuizzesController < ApplicationController
 
   before_action :set_categories 
   before_action :require_login , except: [:index, :start, :question, :answer, :score]
-  before_action :restrict_access, only: [:edit, :update, :delete]
-  before_action :set_quiz, only: [:edit, :update, :show ]
+  #before_action :restrict_access, only: [:edit, :update, :delete]
+  before_action :set_quiz, only: [:show, :edit, :update]
 
   def index
     @quizzes = Quiz.all
-    #@user = User.find(params[:id])
   end
 
   def new
@@ -18,6 +17,7 @@ class QuizzesController < ApplicationController
 
   def show
     @reviews = @quiz.reviews
+    
   end
 
   def create
@@ -37,6 +37,7 @@ class QuizzesController < ApplicationController
   end
 
   def update
+    
     @category = @quiz.category
     if @quiz.update_attributes(params[:quiz])
       flash[:notice] = "Your quiz was updated!"
@@ -48,6 +49,7 @@ class QuizzesController < ApplicationController
 
   def destroy
     @quiz = Quiz.find(params[:id])
+    
     @quiz.destroy
     flash[:notice] = "Your quiz has been deleted!"
     redirect_to quizzes_path
@@ -55,7 +57,8 @@ class QuizzesController < ApplicationController
 
   def start
     start_variables_for_quiz
-    redirect_to :action => "question", :id => @quiz.id
+    redirect_to take_quiz_path(@quiz)
+    #binding.pry
   end
 
   def question
@@ -101,13 +104,13 @@ class QuizzesController < ApplicationController
   end
 
   def start_variables_for_quiz
-    @quiz = Quiz.find(params[:id])
+    @quiz = Quiz.find_by(slug: params[:id])
     session[:current_question] = 0
     session[:correct_answers] = 0
   end
 
   def prepare_quiz
-    @quiz = Quiz.find(params[:id])
+    @quiz = Quiz.find_by(slug: params[:id])
     @length_of_quiz = @quiz.questions.length
     @number = session[:current_question]
     @current_question = @quiz.questions[session[:current_question]]
@@ -116,9 +119,9 @@ class QuizzesController < ApplicationController
   def manage_redirect
     if @number+1 < @length_of_quiz
       session[:current_question] += 1
-      redirect_to :action => "question", :id => @quiz.id
+      redirect_to take_quiz_path(@quiz)
     else
-      redirect_to :action => "score", :id => @quiz.id
+      redirect_to score_path(@quiz)
     end
   end
 
@@ -140,7 +143,7 @@ class QuizzesController < ApplicationController
   end
 
   def restrict_access
-    @quiz = Quiz.find_by(slug: params[:id])
+    @quiz = Quiz.find(params[:id])
     if current_user != @quiz.user
       flash[:danger] = "You are not allowed to do that!"
       redirect_to quizzes_path
