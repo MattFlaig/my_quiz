@@ -3,8 +3,8 @@ class QuizzesController < ApplicationController
 
   before_action :set_categories 
   before_action :require_login , except: [:index, :start, :question, :answer, :score]
-  #before_action :restrict_access, only: [:edit, :update, :delete]
-  before_action :set_quiz, only: [:show, :edit, :update]
+  before_action :restrict_access, only: [:edit, :update, :destroy]
+  before_action :set_quiz, only: [:show, :edit, :update, :destroy]
 
   def index
     @quizzes = Quiz.all
@@ -48,7 +48,7 @@ class QuizzesController < ApplicationController
   end
 
   def destroy
-    @quiz = Quiz.find(params[:id])
+    #@quiz = Quiz.find_by(slug: params[:id])
     
     @quiz.destroy
     flash[:notice] = "Your quiz has been deleted!"
@@ -143,7 +143,7 @@ class QuizzesController < ApplicationController
   end
 
   def restrict_access
-    @quiz = Quiz.find(params[:id])
+    @quiz = Quiz.find_by(slug: params[:id])
     if current_user != @quiz.user
       flash[:danger] = "You are not allowed to do that!"
       redirect_to quizzes_path

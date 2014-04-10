@@ -3,14 +3,18 @@ class ReviewsController < ApplicationController
   before_action :set_categories 
 
   def create
-    @quiz = Quiz.find(params[:quiz_id])
+    @quiz = Quiz.find_by(slug: params[:quiz_id])
     review = @quiz.reviews.build(params[:review].merge!(:user_id => current_user.id))
-   
-    if review.save
-      redirect_to @quiz
-    else
-      @reviews = @quiz.reviews.reload
-      render 'quizzes/show'
+    if current_user == @quiz.user
+      check_for_same_user
+    else 
+      if review.save
+        flash[:notice] = "A new review was created!"
+        redirect_to @quiz
+      else
+        @reviews = @quiz.reviews.reload
+        render 'quizzes/show'
+      end
     end
   end
 
@@ -25,5 +29,11 @@ class ReviewsController < ApplicationController
       flash[:danger] = "Please login first!"
       redirect_to login_path
     end
+  end
+
+  def check_for_same_user
+    flash[:danger] = "Please don't review your own quiz!"
+    @reviews = @quiz.reviews.reload
+    render 'quizzes/show'
   end
 end

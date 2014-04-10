@@ -165,7 +165,7 @@ describe QuizzesController do
       category = Fabricate(:category)
       question = Fabricate(:question, category_id: category.id)
       quiz = Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id)
-      delete :destroy, {id: quiz.id}
+      delete :destroy, {id: quiz}
     end
   
     it_behaves_like "requires login" do

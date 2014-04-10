@@ -2,8 +2,8 @@ class QuestionsController < ApplicationController
 require 'pry'
 before_action :require_login
 before_action :set_categories
-#before_action :restrict_access, except: [:index, :new, :create]
-before_action :set_question, only: [:show, :edit, :update]
+before_action :restrict_access, except: [:index, :new, :create]
+before_action :set_question, only: [:show, :edit, :update, :destroy]
 
   def index
     @questions = Question.all
@@ -42,7 +42,7 @@ before_action :set_question, only: [:show, :edit, :update]
   end
 
   def destroy
-    @question = Question.find(params[:id])
+    #@question = Question.find_by(slug: params[:id])
     @question.destroy
     flash[:notice] = "Your question has been deleted!"
     redirect_to questions_path
