@@ -1,22 +1,18 @@
 <div class= "center hero-unit">
-<% if logged_in? %>
-  <h1> Quizzes </h1>
-  <h2> To take a quiz, simply click on the blue button below! </h2>
-<% else %>
-  <h1> Welcome to my quiz app!</h1> <h2>To create your own quizzes, please <%= link_to "login", login_path %> or <%= link_to "register", new_user_path %></h2>
-<% end %>
-</br>
+  <% if logged_in? %>
+    <h1> All Quizzes </h1>
+    <h2>If you need help to get started, please go <%= link_to "here", help_path %></h2>
+  <% else %>
+    <h1> Welcome to my quiz app!</h1> <h2>To create your own quizzes, please <%= link_to "login", login_path %> or <%= link_to "register", new_user_path %></h2>
+  <% end %>
+  </br>
 
-<% @quizzes.each do |quiz| %>
-  
+  <% @quizzes.each do |quiz| %>
     <div class= "well">
       <ul>
         <li>
           <h2><%= link_to quiz.quiz_name, quiz_path(quiz) %></h2>
-          <h3>created by  <%#= link_to quiz.user.username, {:controller => "users", :action => "show", :id => quiz.user.slug } %>
-
-
-<%= link_to quiz.user.username, user_path(quiz.user) %> </h3>
+          <h3>created by <%= link_to quiz.user.username, user_path(quiz.user) %> </h3>
           <% if quiz.user == current_user %>
             <%= link_to "(Delete)", quiz, method: :delete %> 
             <%= link_to "(Edit)", edit_quiz_path(quiz) %>
@@ -27,10 +23,6 @@
         Start Quiz!
         <% end %>
       </ul>
-
-      
-
     </div>
-<% end %>
-
+  <% end %>
 </div>
