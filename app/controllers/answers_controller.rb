@@ -1,12 +1,15 @@
 class AnswersController < ApplicationController
   require 'pry'
-  before_action :set_categories
+
+  before_action :set_categories 
   before_action :require_login
   before_action :restrict_access, only: [ :create, :destroy]
   before_action :set_question, only: [:create, :destroy]
 
   def create
     @answer = Answer.new(params[:answer])
+
+    #association between answer and question by hand
     @answer.question = @question
     
     if @answer.save

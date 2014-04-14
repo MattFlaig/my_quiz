@@ -12,6 +12,7 @@ class ReviewsController < ApplicationController
         flash[:notice] = "A new review was created!"
         redirect_to @quiz
       else
+        #reloading reviews to display on show template of quizzes
         @reviews = @quiz.reviews.reload
         render 'quizzes/show'
       end
@@ -31,6 +32,7 @@ class ReviewsController < ApplicationController
     end
   end
 
+  #make sure that one can't review one's own quiz
   def check_for_same_user
     flash[:danger] = "Please don't review your own quiz!"
     @reviews = @quiz.reviews.reload

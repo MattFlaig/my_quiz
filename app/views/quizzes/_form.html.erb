@@ -24,17 +24,18 @@
     </div>
     <div>
       <%= hidden_field_tag 'category_id', @category.id %>
-      <%#= hidden_field_tag 'quiz_id', @quiz.id %>
     </div>
     <% if @category.questions.empty? %>
       You don't have created any questions for this category yet. </br> Go <%= link_to "here", new_question_path %> to do so and come back then!
     <% else %>
-      <div class="control-group">
+     <div class="control-group">
       <%= f.label :questions %>
         <div class="controls">
-            <%= f.select :question_ids, @category.questions.collect {|x| [x.question_text, x.id]},{}, :multiple => true, rows: 8, class: "span8" %>
+          <%= f.select :question_ids, @possible_questions.collect {|x| [x.question_text, x.id]},{}, :multiple => true, rows: 8, class: "span8" %>
         </div>
       </div>
+      <h6>Note: Questions are only listed here if they have at least 2 answers</h6>
+      </br>
       <div>
         <%= f.submit class: "btn btn-large btn-success" %>
       </div>  

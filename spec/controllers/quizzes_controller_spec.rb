@@ -1,42 +1,55 @@
 require 'spec_helper'
 require 'pry'
 
-describe QuizzesController do
-  describe "GET index" do
-    it "sets the @quizzes variable" do
-      category = Fabricate(:category)
-      question_1 = Fabricate(:question, category_id: category.id)
+describe QuizzesController do #gives name of controller to be tested
+  describe "GET index" do #gives action to be tested
+    it "sets the @quizzes variable" do #specifies first test case
+      category = Fabricate(:category) #fabricate a fake test object for category (see spec/fabricators)
+      question_1 = Fabricate(:question, category_id: category.id) #same for question
       question_2 = Fabricate(:question, category_id: category.id)
-      quiz_1 = Fabricate(:quiz, category_id: category.id, question_ids: [question_1.id, question_2.id])
+      quiz_1 = Fabricate(:quiz, category_id: category.id, question_ids: [question_1.id, question_2.id]) #same for quiz
       quiz_2 = Fabricate(:quiz, category_id: category.id, question_ids: [question_1.id, question_2.id])
-      get :index
-      expect(assigns[:quizzes]).to match_array([quiz_1, quiz_2])
+      get :index #calling the action in controller with our fake test data
+      expect(assigns[:quizzes]).to match_array([quiz_1, quiz_2]) #expected result
     end
   end
 
   describe "GET new" do
-    it_behaves_like "requires login" do
+    it_behaves_like "requires login" do #shared example for simulating require login before_action (see spec/support/shared_examples.rb)
       let(:action) {get :new }
     end
+
+    let(:category) { Fabricate(:category) } #let-syntax to predifine objects which are available for all test cases and only called when needed (better performance)
+    let(:amanda) { Fabricate(:user)}
+    let(:question_1) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+    let(:question_2) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+    let(:answer_1) { Fabricate(:answer, question_id: question_1.id, correct: 0) }
+    let(:answer_2) { Fabricate(:answer, question_id: question_1.id, correct: 1) }
+    
+    before do
+      set_current_user(amanda) #setting current user with macro (see spec/support/macros.rb)
+    end
+
+    it "does not show questions with less than 2 answers" do #test for check_for_answers method (see spec/support/macros.rb)
+      questions = [question_1,question_2]
+      answers = [answer_1, answer_2]
+      expect(check_for_answers(questions)).to eq([question_1])
+    end
+
     it "sets @quiz to be an instance of quiz" do
-      amanda = Fabricate(:user)
-      set_current_user(amanda)
-      get :new
+      get :new, category: category
       expect(assigns(:quiz)).to be_instance_of(Quiz)
     end
 
-    it "sets @category" do #this test case seems strange
-      amanda = Fabricate(:user)
-      set_current_user(amanda)
-      category = Fabricate(:category)
-      get :new #, id: category.id
-      expect(Category.first.id).to eq(category.id)
+    it "sets @category" do 
+      get :new, category: category
+      expect(assigns[:category]).to eq(category)
     end
   end
 
   describe "GET show" do
 
-    let(:category) { Fabricate(:category) }
+    let(:category) { Fabricate(:category) } #let-syntax to predifine objects which are available for all test cases and only called when needed (better performance)
     let(:amanda) { Fabricate(:user)}
     let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
     let(:quiz) { Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id) }
@@ -52,21 +65,22 @@ describe QuizzesController do
     end
   end
 
-  describe "POST create" do
-    it_behaves_like "requires login" do
-      let(:action) {post :create, user_id: 1, category_id: 1, question_ids: 1}
-    end 
+   describe "POST create" do 
 
-    context "with valid input" do
+    context "with valid input" do #specify input context
       let(:amanda) { Fabricate(:user)}
       let(:category) { Fabricate(:category) }
-      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:question_1) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
 
-      before do
-        set_current_user(amanda) 
-        post :create, quiz: Fabricate.attributes_for(:quiz, user_id: amanda.id, category_id: category.id, question_ids: question.id)
+      before do #before block with code needed in several test cases to avoid repetition
+        set_current_user(amanda)
+        post :create, quiz: Fabricate.attributes_for(:quiz, user_id: amanda.id, question_ids: question_1.id ), category_id: category.id
       end
-      
+
+      it_behaves_like "requires login" do
+        let(:action) {post :create, user_id: 1, category_id: 1, question_ids: 1}
+      end 
+
       it "creates a new quiz for the current user" do
         expect(Quiz.count).to eq(1)
       end
@@ -84,20 +98,31 @@ describe QuizzesController do
       end
     end
 
-    context "with invalid input" do
+    context "with invalid input" do #specify context if input is not valid
+      let(:category) { Fabricate(:category) }
+      let(:amanda) { Fabricate(:user)}
+      let(:question_1) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:question_2) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:answer_1) { Fabricate(:answer, question_id: question_1.id, correct: 0) }
+      let(:answer_2) { Fabricate(:answer, question_id: question_1.id, correct: 1) }
+      
       before do
-        amanda = Fabricate(:user)
         set_current_user(amanda)
-        category = Fabricate(:category)
-        post :create, quiz: {user_id: amanda.id, category_id: category.id}
+        post :create, quiz: {user_id: amanda.id}, category_id: category.id
       end
 
-      it "does not create the user" do
+      it "does not create the quiz" do
         expect(Quiz.first).to be_nil
       end
 
       it "renders the new template" do
         expect(response).to render_template :new
+      end
+
+      it "does not show questions with less than 2 answers" do 
+        questions = [question_1,question_2]
+        answers = [answer_1, answer_2]
+        expect(check_for_answers(questions)).to eq([question_1])
       end
     end
   end
@@ -107,8 +132,11 @@ describe QuizzesController do
 
       let(:category) { Fabricate(:category) }
       let(:amanda) { Fabricate(:user)}
-      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
-      let(:quiz) { Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id) }
+      let(:question_1) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:question_2) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:answer_1) { Fabricate(:answer, question_id: question_1.id, correct: 0) }
+      let(:answer_2) { Fabricate(:answer, question_id: question_1.id, correct: 1) }
+      let(:quiz) { Fabricate(:quiz, user_id: amanda.id, question_ids: question_1.id, category_id: category.id) }
       
       before do
         set_current_user(amanda)
@@ -130,14 +158,23 @@ describe QuizzesController do
       it "redirects to quizzes index" do
         expect(response).to redirect_to quizzes_path
       end
+
+      it "does not show questions with less than 2 answers" do 
+        questions = [question_1,question_2]
+        answers = [answer_1, answer_2]
+        expect(check_for_answers(questions)).to eq([question_1])
+      end
     end
 
     context "with invalid input" do
 
       let(:category) { Fabricate(:category) }
       let(:amanda) { Fabricate(:user)}
-      let(:question) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
-      let(:quiz) { Fabricate(:quiz, user_id: amanda.id, question_ids: question.id, category_id: category.id) }
+      let(:question_1) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:question_2) { Fabricate(:question, user_id: amanda.id, category_id: category.id) }
+      let(:answer_1) { Fabricate(:answer, question_id: question_1.id, correct: 0) }
+      let(:answer_2) { Fabricate(:answer, question_id: question_1.id, correct: 1) }
+      let(:quiz) { Fabricate(:quiz, user_id: amanda.id, question_ids: question_1.id, category_id: category.id) }
       
       before do
         set_current_user(amanda)
@@ -185,3 +222,4 @@ describe QuizzesController do
     end
   end
 end  
+

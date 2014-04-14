@@ -42,18 +42,19 @@ before_action :set_question, only: [:show, :edit, :update, :destroy]
   end
 
   def destroy
-    #@question = Question.find_by(slug: params[:id])
     @question.destroy
     flash[:notice] = "Your question has been deleted!"
     redirect_to questions_path
   end
 
+  # action for set correct answer from show question template
   def set_correct_answer
     set_question_and_answer
     @answer.correct = 1
     save_answer_and_render
   end
 
+  # action for set incorrect answer from show question template
   def set_incorrect_answer
     set_question_and_answer
     @answer.correct = 0

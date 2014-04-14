@@ -1,9 +1,18 @@
 class QuizzesController < ApplicationController
   require 'pry'
+  #load module Quizzable from /lib for take quiz actions
+  include Quizzable
 
+  #to be able to create a quiz with preselected category (Dropdownmenu "New Quiz")
   before_action :set_categories 
+
+  #method to require current user
   before_action :require_login , except: [:index, :start, :question, :answer, :score]
+  
+  #not allow other users to edit or destroy your own quiz
   before_action :restrict_access, only: [:edit, :update, :destroy]
+  
+  #set quiz for actions to be able to use slugs
   before_action :set_quiz, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -13,32 +22,33 @@ class QuizzesController < ApplicationController
   def new
     @quiz = Quiz.new
     @category = Category.find_by_id(params[:category])
+    check_for_answers(@category.questions) unless @category.questions.empty?
   end
 
   def show
     @reviews = @quiz.reviews
-    
   end
 
   def create
     set_variables_for_create
-
+    check_for_answers(@category.questions) unless @category.questions.empty?
+ 
     if @quiz.save
       flash[:notice] = "Your quiz was succesfully created!"
       redirect_to quizzes_path
     else
       render 'new'
     end
-    #binding.pry
   end
 
   def edit
     @category = @quiz.category
+    check_for_answers(@category.questions) unless @category.questions.empty?
   end
 
   def update
-    
     @category = @quiz.category
+    check_for_answers(@category.questions) unless @category.questions.empty?
     if @quiz.update_attributes(params[:quiz])
       flash[:notice] = "Your quiz was updated!"
       redirect_to quizzes_path
@@ -48,87 +58,39 @@ class QuizzesController < ApplicationController
   end
 
   def destroy
-    #@quiz = Quiz.find_by(slug: params[:id])
-    
     @quiz.destroy
     flash[:notice] = "Your quiz has been deleted!"
     redirect_to quizzes_path
   end
 
-  def start
-    start_variables_for_quiz
-    redirect_to take_quiz_path(@quiz)
-    #binding.pry
-  end
-
-  def question
-    prepare_quiz
-    @answers = @current_question.answers
-    session[:current_question] = @number
-    if @answers.empty? || @answers.length < 2
-      flash[:danger] = "There are not enough answers specified for question #{@current_question.question_text} Please create some more!"
-      redirect_to question_path(id: @current_question.id)
-    end
-  end
-
-  def answer
-    prepare_quiz
-    @answer_choice = Answer.find_by_id(params[:answer])
-    if @answer_choice && @answer_choice.correct == 1
-      session[:correct_answers] += 1
-    end
-    manage_redirect
-  end
-
-  def score
-    prepare_quiz
-    @score = session[:correct_answers]
-    @percent = ((@score.to_f / @length_of_quiz.to_f) * 100).to_i
-    if @percent >= 80
-      flash.now[:notice] = "Congratulations! This was very good!"
-    elsif  @percent < 79 && @percent != 0
-      flash.now[:notice] = "Not bad!"
-    else
-      flash.now[:danger] = "It seems you need more practice."
-    end
-  end
-
+  #help action left empty because template is rendered automatically 
   def help
   end
 
-  
   private
+
+  #method to check if a question has enough answers, otherwise
+  #it won't be available in create quiz action
+  def check_for_answers(questions)
+    @possible_questions = []
+    questions.each do |question| 
+      unless question.answers.length < 2 
+        @possible_questions << question 
+      end 
+      @possible_questions
+    end 
+  end
 
   def set_quiz
     @quiz = Quiz.find_by(slug: params[:id])
   end
 
-  def start_variables_for_quiz
-    @quiz = Quiz.find_by(slug: params[:id])
-    session[:current_question] = 0
-    session[:correct_answers] = 0
-  end
-
-  def prepare_quiz
-    @quiz = Quiz.find_by(slug: params[:id])
-    @length_of_quiz = @quiz.questions.length
-    @number = session[:current_question]
-    @current_question = @quiz.questions[session[:current_question]]
-  end
-
-  def manage_redirect
-    if @number+1 < @length_of_quiz
-      session[:current_question] += 1
-      redirect_to take_quiz_path(@quiz)
-    else
-      redirect_to score_path(@quiz)
-    end
-  end
-
+  #setting variables and associating quiz params with user_id
   def set_variables_for_create
     @category = Category.find_by_id(params[:category_id])
     @quiz = Quiz.new(params[:quiz].merge!(:user_id => current_user.id))
     @quiz.category = @category
+
   end
 
   def set_categories
