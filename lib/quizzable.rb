@@ -6,7 +6,7 @@ module Quizzable
     redirect_to take_quiz_path(@quiz, current_question: @quiz.questions.first, number: session[:current_question])
   end
 
-  #question action to set uo variables neede for displaying question and answers
+  #question action to set up variables needed for displaying question and answers
   #dynamically in question template
   def question
     prepare_quiz
@@ -19,13 +19,9 @@ module Quizzable
   #answer action to check if answer was correct and redirecting action
   def answer
     prepare_quiz
-    
     session[:current_question] = @number
-    @answer_choice = Answer.find_by(slug: params[:answer])
-    unless params[:answer].blank?
-      session[:already_answered] << @answer_choice.slug
-    end
-    session[:already_answered].uniq!
+    delete_old_answer
+    save_new_answer   
     manage_redirect
   end
 
@@ -36,6 +32,8 @@ module Quizzable
     score_feedback
   end
 
+
+
 private
 
  #initiating take quiz sessions
@@ -44,6 +42,7 @@ private
     session[:current_question] = 0
     session[:correct_answers] = 0
     session[:already_answered] = []
+    #session[:counter] = 0
   end
 
   #setting variables needed for quiz actions
@@ -52,6 +51,23 @@ private
     @length_of_quiz = @quiz.questions.length
     @number = params[:number].to_i
     @current_question = Question.find_by(slug: params[:current_question])
+  end
+
+  def delete_old_answer
+    session[:already_answered].each do |change_answer|
+      answer = Answer.find_by(slug: change_answer)
+      if answer.question_id == @current_question.id
+        session[:already_answered].delete(change_answer)
+      end
+    end
+  end
+
+  def save_new_answer
+    @answer_choice = Answer.find_by(slug: params[:answer])
+    unless params[:answer].blank?
+      session[:already_answered] << @answer_choice.slug
+    end
+    session[:already_answered].uniq!
   end
 
   #if last question of quiz is not reached, go to next question, 
