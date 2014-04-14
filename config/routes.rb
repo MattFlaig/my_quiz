@@ -21,7 +21,7 @@ MyQuiz::Application.routes.draw do
 
   get 'start_quiz/:id', to: 'quizzes#start', as: 'start_quiz'
   get 'take_quiz/:id/:current_question', to: 'quizzes#question', as: 'take_quiz'
-  post 'answer/:id/:current_question', to: 'quizzes#answer'
+  post 'answer/:id/:current_question', to: 'quizzes#answer', as: 'answer_question'
   get 'score/:id', to: 'quizzes#score', as: 'score'
 
   get 'help', to: 'quizzes#help'

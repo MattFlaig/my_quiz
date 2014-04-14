@@ -45,15 +45,13 @@
   </div>
 
     </br>
-    <% if @number + 1 == @length_of_quiz %>
-      <div>
-        <%= submit_tag "Submit & show score", class: "btn btn-large btn-success" %>
-      </div>
-    <% else %>
       <div>
         <%= submit_tag "Submit & continue", class: "btn btn-large btn-success" %>
+      
+        <div class="float">
+          <%= submit_tag "Score", class: "btn btn-large btn-warning" %>
+        </div>
       </div>
-    <% end %>
   <% end %>
 
 </div>

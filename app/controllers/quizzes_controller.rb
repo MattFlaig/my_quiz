@@ -90,7 +90,6 @@ class QuizzesController < ApplicationController
     @category = Category.find_by_id(params[:category_id])
     @quiz = Quiz.new(params[:quiz].merge!(:user_id => current_user.id))
     @quiz.category = @category
-
   end
 
   def set_categories

@@ -10,19 +10,20 @@ module Quizzable
   #dynamically in question template
   def question
     prepare_quiz
-
     @possible_answers = @current_question.answers
     @answer = Answer.find_by(slug: session[:already_answered][@number])
     session[:current_question] = @number
+    #binding.pry
   end
 
-  #answer action to check if answer was correct and redirecting action
+  #answer action to check if answer was changed and redirecting action
   def answer
     prepare_quiz
     session[:current_question] = @number
     delete_old_answer
     save_new_answer   
     manage_redirect
+    #binding.pry
   end
 
   #score action to count right answers and send out messages
@@ -42,7 +43,6 @@ private
     session[:current_question] = 0
     session[:correct_answers] = 0
     session[:already_answered] = []
-    #session[:counter] = 0
   end
 
   #setting variables needed for quiz actions
@@ -53,6 +53,8 @@ private
     @current_question = Question.find_by(slug: params[:current_question])
   end
 
+  #when coming via go back buttons and changing already given answers
+  #old answer has to be deleted
   def delete_old_answer
     session[:already_answered].each do |change_answer|
       answer = Answer.find_by(slug: change_answer)
@@ -62,23 +64,28 @@ private
     end
   end
 
+  #insert new answer in session[:already_answered] at the same spot old answer was
   def save_new_answer
     @answer_choice = Answer.find_by(slug: params[:answer])
     unless params[:answer].blank?
-      session[:already_answered] << @answer_choice.slug
+      session[:already_answered].insert(@number, @answer_choice.slug)
     end
-    session[:already_answered].uniq!
   end
 
-  #if last question of quiz is not reached, go to next question, 
-  #otherwise redirect to score
+  #if yellow score button was pushed, redirect to score. Else either go to next question, 
+  #or, if last question is reached, also redirect to score 
   def manage_redirect
-    if @number+1 < @length_of_quiz
-      session[:current_question] += 1
-      @number = session[:current_question]
-      redirect_to take_quiz_path(@quiz, current_question: @quiz.questions[session[:current_question]], number: @number)
-    else
+    if params[:commit] == "Score"
       redirect_to score_path(@quiz)
+    else
+      if @number+1 < @length_of_quiz
+        session[:current_question] += 1
+        @number = session[:current_question]
+        redirect_to take_quiz_path(@quiz, current_question: @quiz.questions[session[:current_question]], number: @number)
+      else
+        flash.now[:notice] = "You arrived at the end of this quiz! Please review your questions or proceed to score!"
+        render 'answer'
+      end 
     end
   end
 
