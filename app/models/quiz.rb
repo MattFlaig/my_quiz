@@ -1,5 +1,5 @@
 class Quiz < ActiveRecord::Base
-  # load module into quiz class
+  # load module from /lib into quiz class
   include Slugable
 
   # via gem 'protected_attributes' attr_accessible is still available in rails 4
