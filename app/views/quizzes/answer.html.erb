@@ -1,30 +1,27 @@
 <div class= "center hero-unit">
 <h1><%= @quiz.quiz_name %></h1>
 <h2><%= @quiz.description %></h2>
-<h3>Question <%= @number + 1 %> of <%= @length_of_quiz %></h3>
-
 </br>
-  <%= form_tag({:controller => "quizzes",:action => "question"}) do %>
 
-    <h3>Question: </h3>
-    <p>
-      <%= @current_question.question_text %>
-    </p>
-    </br>
-    <h3>Given Answer:</h3>
-    <p>
-      <%= @answer_choice.answer_text %>
-    </p>
-    <div>
-      <%= hidden_field_tag(:id, @quiz.id) %>
+  <div>
+    Go to Question:</br>
+    <div class="btn-group">
+      <% @quiz.questions.each_with_index do |question,index| %>
+        
+          <%= link_to index+1, {:controller => "quizzes", :action => "question", current_question: question, :number => index }, class: "btn btn-default"%> 
+        
+      <% end %>
     </div>
-    <% if @number + 1 == @length_of_quiz %>
-      <%= link_to "Score",{:controller => "quizzes", :action => "score", :id => @quiz.id}, class: "btn btn-large btn-primary" %>
-       
-    <% else %>
-      <div>
-        <%= submit_tag "Next Question", class: "btn btn-large btn-success" %>
-      </div>
-    <% end %>
-  <% end %>
+  </div> 
+  </br>
+
+ <!--  <div class="well">
+    You have arrived at the end of this quiz! You can either review your questions some more or push the score-button below.
+  </div>
+  </br>
+
+  <div > -->
+    <%= link_to "Score", score_path(@quiz), class: "btn btn-large btn-warning" %>
+  </div>
+  </br>
 </div>

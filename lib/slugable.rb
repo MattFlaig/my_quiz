@@ -1,13 +1,18 @@
 module Slugable
+  #extend Active Record Base Class via Active Support Concern to be able to share Module code in all models
   extend ActiveSupport::Concern
   
   included do
+    #create slug before record is saved to database
     before_save :generate_slug!
+    #make sure slug_column can be called on subclasses
     class_attribute :slug_column
   end
 
+  #create slug from regex method and module ClassMethods below (with method slugable_column, which is called from respective model)
   def generate_slug!
     str = to_slug(self.send(self.class.slug_column.to_sym))
+    #handle special case with doubled records 
     unless str == nil
       count = 2
       obj = self.class.where(slug: str).first
@@ -16,10 +21,12 @@ module Slugable
         obj = self.class.where(slug: str).first
         count += 1
       end
+      #make sure to only have downcase slugs
       self.slug = str.downcase
     end
   end
 
+  #regex method
   def to_slug(name)
     if name != nil
     #strip the string
@@ -45,6 +52,7 @@ module Slugable
      end
   end
 
+  #construct an URL path from slug string
   def to_param
     self.slug
   end

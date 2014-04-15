@@ -143,7 +143,7 @@ describe QuestionsController do
       set_current_user(amanda)
       category = Fabricate(:category)
       question = Fabricate(:question, category_id: category.id, user_id: amanda.id)
-      delete :destroy, {id: question.id}
+      delete :destroy, {id: question}
     end
   
     it_behaves_like "requires login" do

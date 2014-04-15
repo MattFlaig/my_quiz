@@ -9,4 +9,5 @@
 user = User.create({username: "Bob", email: "bob@bob.com", password: "password"})
 categories = Category.create([{category_name: "Number Sequences"}, {category_name: "Programming"}])
 questions = Question.create([{question_text: "2_4_6_8_?", category_id: categories.first.id, user_id: user.id}, {question_text: "2_3_5_7_11_?", category_id: categories.first.id, user_id: user.id}])
-answers = Answer.create([{answer_text: "10", question_id: questions.first.id, correct: 1}, {answer_text: "11", question_id: questions.first.id, correct: 0}, {answer_text: "12", question_id: questions.first.id, correct: 0}])
+answers = Answer.create([{answer_text: "10", question_id: questions.first.id, correct: 1}, {answer_text: "11", question_id: questions.first.id, correct: 0}, {answer_text: "12", question_id: questions.first.id, correct: 0},{answer_text: "14", question_id: questions.last.id, correct: 0}, {answer_text: "13", question_id: questions.last.id, correct: 1}])
+quiz = Quiz.create(quiz_name: "Very easy logical sequences", description: "Please find the next element in the sequences below", category_id: categories.first.id, user_id: user.id, question_ids: [questions.first.id, questions.last.id])

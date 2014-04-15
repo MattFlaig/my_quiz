@@ -2,36 +2,56 @@
 <h1><%= @quiz.quiz_name %></h1>
 <h2><%= @quiz.description %></h2>
 </br>
-  <%= form_tag({:controller => "quizzes",:action => "answer"}) do %>
 
-  <h3>Question <%= @number + 1 %> / <%= @length_of_quiz %>:</h3>
-  <p>
-  <%= @current_question.question_text %>
-  </p>
-  </br>
+  <%= form_tag({:controller => "quizzes",:action => "answer"}) do %>  
 
-  <h3>Answers: 
-    <p>
-      <% @answers.each do |answer| %>
-        <%= radio_button_tag(:answer, answer.id) %>
-        <%= label_tag("answer", answer.answer_text) %>
+  <div>
+    Go to Question:</br>
+    <div class="btn-group">
+      <% @quiz.questions.each_with_index do |question,index| %>
+        
+          <%= link_to index+1, {:controller => "quizzes", :action => "question", current_question: question, :number => index }, class: "btn btn-default"%> 
+        
       <% end %>
+    </div>
+  </div> 
+</br>
+
+  <div class="well">
+    <h3>Question <%= @number + 1 %> / <%= @length_of_quiz %>:</h3>
+
+    <p>
+    <%= @current_question.question_text %>
     </p>
-  </h3>
+    </br>
+
+    <h3>Answers: 
+      <p>
+        <% @possible_answers.each do |answer| %>
+          <div class="form-inline">
+          <%= radio_button_tag 'answer', answer.slug, !!(answer == @answer ? true : false ) %>
+          <%= label_tag("answer", answer.answer_text) %>
+          </div>
+        <% end %>
+      </p>
+    </h3>
     <div>
       <%= hidden_field_tag(:id, @quiz.slug) %>
+    
+      <%= hidden_field_tag(:current_question, @current_question) %>
+
+      <%= hidden_field_tag(:number, @number) %>
     </div>
+  </div>
 
-    <% if @number + 1 == @length_of_quiz %>
+    </br>
       <div>
-        <%= submit_tag "Show score", class: "btn btn-large btn-success" %>
+        <%= submit_tag "Submit & continue", class: "btn btn-large btn-success" %>
+      
+        <div class="float">
+          <%= submit_tag "Score", class: "btn btn-large btn-warning" %>
+        </div>
       </div>
-    <% else %>
-      <div>
-        <%= submit_tag "Submit answer & continue", class: "btn btn-large btn-success" %>
-      </div>
-    <% end %>
-
   <% end %>
 
 </div>

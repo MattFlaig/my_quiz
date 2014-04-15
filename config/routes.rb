@@ -8,26 +8,24 @@ MyQuiz::Application.routes.draw do
     resources :answers, only: [:create, :new, :destroy]
   end
 
-  resources :categories
+  resources :categories, only: [:new, :create]
   resources :users, only:[:new, :create, :show]
 
   resources :quizzes do
     resources :reviews, only: [:create]
   end
-
-  #resources :answers , except: [:show] 
   
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   get '/logout', to: 'sessions#destroy'
 
   get 'start_quiz/:id', to: 'quizzes#start', as: 'start_quiz'
-  get 'take_quiz/:id', to: 'quizzes#question', as: 'take_quiz'
-  post 'answer', to: 'quizzes#answer'
+  get 'take_quiz/:id/:current_question', to: 'quizzes#question', as: 'take_quiz'
+  post 'answer/:id/:current_question', to: 'quizzes#answer', as: 'answer_question'
   get 'score/:id', to: 'quizzes#score', as: 'score'
 
   get 'help', to: 'quizzes#help'
-  get 'update/:id', to: 'quizzes#update'
+  #get 'update/:id', to: 'quizzes#update'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

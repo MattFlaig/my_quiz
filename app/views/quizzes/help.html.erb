@@ -1,22 +1,78 @@
 <div class= "center hero-unit">
-<h1>Help</h1>
+<h1>How to create a quiz </h1>
 </br>
-<h2>To create your own quiz, please follow these steps: </h2>
+ <h2> The quick and lazy way: </h2>
   <div class="well">
-  <h3>1) Create a quiz with questions and answers from other users</h3>
-  <p>
-  Click on "New Quiz" and specify a category. You will be guided to the create quiz site, where you can choose from the questions already created by other users.
-  <p/>
+  <h3> Create a quiz with questions and answers from other users</h3>
+    <p>
+     Click on "New Quiz" (second link from the left in navbar) and specify a category. You will be guided to the create quiz site, where you can choose from the questions already created.
+    <p/>
+    <p>
+      <div class="border_black">
+        <%= image_tag('/images/help1.png') %>
+      </div>
+    </p>
   </div>
  </br>
+ </br>
+  <h2>To create your own quiz, please follow these steps: </h2>
   <div class="well">
-  <h3>2) Create a quiz with your own questions and answers</h3>
-  <p>
-   Choose "Quiz elements" and from the dropdown, choose "Add question" which will guide you to the create questions site. After succesful creation of your question, click "New quiz", choose a category and repeat the steps above. 
-  
+  <h3> Create a quiz with your own questions and answers</h3>
+    <p>
+    1) Choose "Quiz elements" and from the dropdown, choose <%= link_to "Add question", new_question_path %> which will guide you to the create questions site. After succesful creation of your question, you may repeat this step until you have the number of questions you wanted.
+    </p>
+    <p>
+      <div class="border_black">
+        <%= image_tag('/images/help2a.png') %>
+      </div>
+    </p>
+    </br>
+    </br>
+    <p>
+    2) To create some answers for your question, go to <%= link_to "Browse Questions", questions_path %>(can be found in the dropdown "Quiz Elements") and scroll to your question just created. 
+    </p>
+    <p>
+      <div class="border_black">
+        <%= image_tag('/images/help3a.png') %>
+      </div>
+    </p>
+    </br>
+    </br>
+    <p>
+    3) Then click on "show". You will be guided to the show question site, where you will find a table displaying your question details and the possibility to create new corresponding answers.
+    </p>
+    <p>
+      <div class="border_black">
+        <%= image_tag('/images/help4.png') %>
+      </div>
+    </p>
+    </br>
+    </br>
+    <p>
+    4) A new answer will be set to "incorrect" by default, which can be changed with the "Set to correct"-Link (under "Actions") on the same site.
+    </p>
+    <p>
+      <div class="border_black">
+        <%= image_tag('/images/help5.png') %>
+      </div>
+    </p>
+    </br>
+    </br>
+    <p>
+    5) You can create your quiz now via the "New Quiz" dropdown button as described in the "quick and lazy way" above.
+    </p>
+  </div>
   </br>
- 
-  To create some answers for your question, go to "Browse Questions" and scroll to your question just created. Then click on "show". You will be guided to the show question site, where you see a table displaying your question details and a link to create a new corresponding answer. 
-  </p>
+  <div class="well">
+  <h3>If you want your own category, create one </h3>
+    <p>
+    6) Please go to "Quiz Elements" above and choose <%= link_to "Add Category", new_category_path %>. Then repeat the steps from 1-5 and have fun with your own quizzes!  
+    <p/>
+    <p>
+      <div class="border_black">
+        <%= image_tag('/images/help6.png') %>
+      </div>
+    </p>
+    </br>
   </div>
 </div>
