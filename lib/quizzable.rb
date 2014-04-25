@@ -17,11 +17,19 @@ module Quizzable
 
   #answer action to check if answer was changed and redirecting action
   def answer
-    prepare_quiz
-    session[:current_question] = @number
-    delete_old_answer
-    save_new_answer   
-    manage_redirect
+    if params[:commit] == "Answer Survey"
+      prepare_quiz
+      session[:current_question] = @number
+      delete_old_answer
+      save_new_answer 
+      render 'quizzes/survey'
+    else
+      prepare_quiz
+      session[:current_question] = @number
+      delete_old_answer
+      save_new_answer   
+      manage_redirect
+    end
   end
 
   #score action to count right answers and send out messages
@@ -87,7 +95,7 @@ private
         redirect_to take_quiz_path(@quiz, current_question: @quiz.questions[session[:current_question]], number: @number)
       else
         flash.now[:notice] = "You arrived at the end of this quiz! Please review your questions or proceed to score!"
-        render 'answer'
+        render 'quizzes/survey'
       end 
     end
   end
