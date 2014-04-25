@@ -31,6 +31,9 @@ module Quizzable
     score_feedback
   end
 
+  def survey
+    prepare_quiz
+  end
 
 
 private
