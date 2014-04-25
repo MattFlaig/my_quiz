@@ -13,7 +13,6 @@ module Quizzable
     @possible_answers = @current_question.answers
     @answer = Answer.find_by(slug: session[:already_answered][@number])
     session[:current_question] = @number
-    #binding.pry
   end
 
   #answer action to check if answer was changed and redirecting action
@@ -23,7 +22,6 @@ module Quizzable
     delete_old_answer
     save_new_answer   
     manage_redirect
-    #binding.pry
   end
 
   #score action to count right answers and send out messages
@@ -58,7 +56,7 @@ private
   def delete_old_answer
     session[:already_answered].each do |change_answer|
       answer = Answer.find_by(slug: change_answer)
-      if answer.question_id == @current_question.id
+      if answer && answer.question_id == @current_question.id
         session[:already_answered].delete(change_answer)
       end
     end
@@ -69,6 +67,8 @@ private
     @answer_choice = Answer.find_by(slug: params[:answer])
     unless params[:answer].blank?
       session[:already_answered].insert(@number, @answer_choice.slug)
+    else
+      session[:already_answered].insert(@number, " ")
     end
   end
 
@@ -91,11 +91,14 @@ private
 
   def compute_result
     session[:already_answered].each do |count|
-      answer = Answer.find_by(slug: count)
-      session[:correct_answers] += 1 if answer.correct == 1
+      unless count == " "
+        answer = Answer.find_by(slug: count)
+        session[:correct_answers] += 1 if answer.correct == 1
+      end
     end
     @score = session[:correct_answers]
     @percent = ((@score.to_f / @length_of_quiz.to_f) * 100).to_i
+    #binding.pry
   end
 
   #giving feedback for the user
