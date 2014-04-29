@@ -17,17 +17,14 @@ module Quizzable
 
   #answer action to check if answer was changed and redirecting action
   def answer
+    prepare_quiz
+    session[:current_question] = @number
+    delete_old_answer
+    save_new_answer
+ 
     if params[:commit] == "Answer Survey"
-      prepare_quiz
-      session[:current_question] = @number
-      delete_old_answer
-      save_new_answer 
       render 'quizzes/survey'
-    else
-      prepare_quiz
-      session[:current_question] = @number
-      delete_old_answer
-      save_new_answer   
+    else  
       manage_redirect
     end
   end
@@ -86,18 +83,14 @@ private
   #if yellow score button was pushed, redirect to score. Else either go to next question, 
   #or, if last question is reached, also redirect to score 
   def manage_redirect
-    if params[:commit] == "Score"
-      redirect_to score_path(@quiz)
+    if @number+1 < @length_of_quiz
+      session[:current_question] += 1
+      @number = session[:current_question]
+      redirect_to take_quiz_path(@quiz, current_question: @quiz.questions[session[:current_question]], number: @number)
     else
-      if @number+1 < @length_of_quiz
-        session[:current_question] += 1
-        @number = session[:current_question]
-        redirect_to take_quiz_path(@quiz, current_question: @quiz.questions[session[:current_question]], number: @number)
-      else
-        flash.now[:notice] = "You arrived at the end of this quiz! Please review your questions or proceed to score!"
-        render 'quizzes/survey'
-      end 
-    end
+      flash.now[:notice] = "You arrived at the end of this quiz! Please review your questions or proceed to score!"
+      render 'quizzes/survey'
+    end 
   end
 
   def compute_result
