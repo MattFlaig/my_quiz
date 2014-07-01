@@ -13,7 +13,6 @@ module Quizzable
     @possible_answers = @current_question.answers
     @answer = Answer.find_by(slug: session[:already_answered][@number])
     session[:current_question] = @number
-    #binding.pry
   end
 
   #answer action to check if answer was changed and redirecting action
@@ -21,9 +20,13 @@ module Quizzable
     prepare_quiz
     session[:current_question] = @number
     delete_old_answer
-    save_new_answer   
-    manage_redirect
-    #binding.pry
+    save_new_answer
+ 
+    if params[:commit] == "Answer Survey"
+      render 'quizzes/survey'
+    else  
+      manage_redirect
+    end
   end
 
   #score action to count right answers and send out messages
@@ -33,6 +36,9 @@ module Quizzable
     score_feedback
   end
 
+  def survey
+    prepare_quiz
+  end
 
 
 private
@@ -58,7 +64,7 @@ private
   def delete_old_answer
     session[:already_answered].each do |change_answer|
       answer = Answer.find_by(slug: change_answer)
-      if answer.question_id == @current_question.id
+      if answer && answer.question_id == @current_question.id
         session[:already_answered].delete(change_answer)
       end
     end
@@ -69,33 +75,34 @@ private
     @answer_choice = Answer.find_by(slug: params[:answer])
     unless params[:answer].blank?
       session[:already_answered].insert(@number, @answer_choice.slug)
+    else
+      session[:already_answered].insert(@number, " ")
     end
   end
 
   #if yellow score button was pushed, redirect to score. Else either go to next question, 
   #or, if last question is reached, also redirect to score 
   def manage_redirect
-    if params[:commit] == "Score"
-      redirect_to score_path(@quiz)
+    if @number+1 < @length_of_quiz
+      session[:current_question] += 1
+      @number = session[:current_question]
+      redirect_to take_quiz_path(@quiz, current_question: @quiz.questions[session[:current_question]], number: @number)
     else
-      if @number+1 < @length_of_quiz
-        session[:current_question] += 1
-        @number = session[:current_question]
-        redirect_to take_quiz_path(@quiz, current_question: @quiz.questions[session[:current_question]], number: @number)
-      else
-        flash.now[:notice] = "You arrived at the end of this quiz! Please review your questions or proceed to score!"
-        render 'answer'
-      end 
-    end
+      flash.now[:notice] = "You arrived at the end of this quiz! Please review your questions or proceed to score!"
+      render 'quizzes/survey'
+    end 
   end
 
   def compute_result
     session[:already_answered].each do |count|
-      answer = Answer.find_by(slug: count)
-      session[:correct_answers] += 1 if answer.correct == 1
+      unless count == " "
+        answer = Answer.find_by(slug: count)
+        session[:correct_answers] += 1 if answer.correct == 1
+      end
     end
     @score = session[:correct_answers]
     @percent = ((@score.to_f / @length_of_quiz.to_f) * 100).to_i
+    #binding.pry
   end
 
   #giving feedback for the user

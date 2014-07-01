@@ -7,7 +7,7 @@ class QuizzesController < ApplicationController
   before_action :set_categories 
 
   #method to require current user
-  before_action :require_login , except: [:index, :start, :question, :answer, :score]
+  before_action :require_login , except: [:index, :start, :question, :answer, :score, :survey]
   
   #not allow other users to edit or destroy your own quiz
   before_action :restrict_access, only: [:edit, :update, :destroy]

@@ -25,6 +25,7 @@ MyQuiz::Application.routes.draw do
   get 'score/:id', to: 'quizzes#score', as: 'score'
 
   get 'help', to: 'quizzes#help'
+  get 'survey/:id', to: 'quizzes#survey'
   #get 'update/:id', to: 'quizzes#update'
 
   # The priority is based upon order of creation: first created -> highest priority.
