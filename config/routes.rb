@@ -19,13 +19,13 @@ MyQuiz::Application.routes.draw do
   post '/login', to: 'sessions#create'
   get '/logout', to: 'sessions#destroy'
 
-  get 'start_quiz/:id', to: 'quizzes#start', as: 'start_quiz'
-  get 'take_quiz/:id/:current_question', to: 'quizzes#question', as: 'take_quiz'
-  post 'answer/:id/:current_question', to: 'quizzes#answer', as: 'answer_question'
-  get 'score/:id', to: 'quizzes#score', as: 'score'
+  get 'start_quiz/:id', to: 'take_quizzes#start', as: 'start_quiz'
+  get "take_quiz/:id/:current_question/:number", to: 'take_quizzes#question', as: 'take_quiz'
+  post 'answer/:id/:current_question', to: 'take_quizzes#answer', as: 'answer_question'
+  get 'score/:id', to: 'take_quizzes#score', as: 'score'
 
   get 'help', to: 'quizzes#help'
-  get 'survey/:id', to: 'quizzes#survey'
+  get 'survey/:id', to: 'take_quizzes#survey'
   #get 'update/:id', to: 'quizzes#update'
 
   # The priority is based upon order of creation: first created -> highest priority.

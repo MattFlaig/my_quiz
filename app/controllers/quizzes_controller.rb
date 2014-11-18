@@ -1,7 +1,5 @@
 class QuizzesController < ApplicationController
   require 'pry'
-  #load module Quizzable from /lib for take quiz actions
-  include Quizzable
 
   #to be able to create a quiz with preselected category (Dropdownmenu "New Quiz")
   before_action :set_categories 
