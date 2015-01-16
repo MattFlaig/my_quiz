@@ -1,64 +1,72 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>MyQuiz</title>
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
-<header class= "navbar navbar-fixed-top">
-  <div class= "navbar-default">
-    <div class= "container"><%= link_to "My Quiz", root_path, id: "logo" %>
-      <ul class= "nav pull-right">
-        
-        <% if logged_in? %>
-          <li><%= link_to "Home", root_path %></li>
-          <li class="dropdown">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle"> New Quiz <b class="caret"></b><a/>
-            <ul class="dropdown-menu">
-              <li>
-                <% @categories.each do |category| %>
-                  <%= link_to category.category_name, {:controller => "quizzes", :action => "new", :category => category.id} %>
-                <% end %>
+  <head>
+    <title>MyQuiz</title>
+    <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <header class= "navbar navbar-fixed-top">
+      <div class= "navbar-default">
+        <div class= "container"><%= link_to "My Quiz", root_path, id: "logo" %>
+          <ul class= "nav pull-right">
+            
+            <% if logged_in? %>
+              <li><%= link_to "Home", root_path %></li>
+              <li class="dropdown">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle"> New Quiz <b class="caret"></b><a/>
+                <ul class="dropdown-menu">
+                  <li>
+                    <% @categories.each do |category| %>
+                      <%= link_to category.category_name, {:controller => "quizzes", :action => "new", :category => category.id} %>
+                    <% end %>
+                  </li>
+                </ul>
               </li>
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle"> Quiz Elements <b class="caret"></b><a/>
-            <ul class="dropdown-menu">
-              <li>
-                <%= link_to "Add Question", new_question_path %>
+              <li class="dropdown">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle"> Quiz Elements <b class="caret"></b><a/>
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= link_to "Add Question", new_question_path %>
+                  </li>
+                  <li>
+                    <%= link_to "Browse Questions", questions_path %>
+                  </li>
+                  <li>
+                    <%= link_to "Add Category", new_category_path %>
+                  </li> 
+                  <li><%= link_to "Help", help_path %></li>
+                </ul>
               </li>
-              <li>
-                <%= link_to "Browse Questions", questions_path %>
+              <li class="dropdown">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle"> Welcome, <%= current_user.username %> <b class="caret"></b><a/>
+                <ul class="dropdown-menu">
+                  <li><%= link_to "User Profile", user_path(current_user) %></li>
+                  <li><%= link_to "Logout", logout_path %></li>
+                </ul>
               </li>
-              <li>
-                <%= link_to "Add Category", new_category_path %>
-              </li> 
-              <li><%= link_to "Help", help_path %></li>
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle"> Welcome, <%= current_user.username %> <b class="caret"></b><a/>
-            <ul class="dropdown-menu">
-              <li><%= link_to "User Profile", user_path(current_user) %></li>
-              <li><%= link_to "Logout", logout_path %></li>
-            </ul>
-          </li>
-        <% else %>
-          <li><%= link_to "Home", root_path %></li>
-          <li><%= link_to "Register", new_user_path %></li>
-          <li><%= link_to "Login", login_path %></li>
-        <% end %>
-      </ul>
+            <% else %>
+              <li><%= link_to "Home", root_path %></li>
+              <li><%= link_to "Register", new_user_path %></li>
+              <li><%= link_to "Login", login_path %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <div id="spacer">
     </div>
-  </div>
-</header>
-<div class="container">
-  <%= render 'layouts/messages' %>
 
-<%= yield %>
-</div>
-</body>
+    <section class="container">
+      <%= render 'layouts/messages' %>
+      <%= yield %>
+    </section>
+
+    <footer>
+      <section class="copyright container">
+        &copy; Copyright 2014 by Matthias Flaig. All Rights Reserved.
+      </section>
+    </footer>
+  </body>
 </html>

@@ -1,0 +1,139 @@
+@import "bootstrap";
+
+
+/* universal */
+
+html 
+  {overflow-y: scroll;}
+
+
+body 
+  {color: black;}
+
+
+
+section 
+  {overflow: auto;}
+
+textarea 
+  {resize: vertical;}
+
+.center
+  {margin-top: 50px;
+   margin-bottom: 50px;}
+ 
+.center h1, h2 
+  {margin-bottom: 10px;}
+  
+.border_black
+  {border: 1px solid #000;}
+
+.float 
+  {float: left; 
+    margin-right: 20px;}
+
+.float a 
+  {color:#000; 
+    text-decoration: none;}
+
+.float a:hover 
+  {color:#fff;}
+
+.btn
+  {color:#000;
+    text-decoration: none;}
+
+
+
+
+/* typography */
+
+ h1, h2, h3, h4, h5, h6 
+  {line-height: 1;}
+
+
+h1 
+  {font-size: 2.2em;
+    letter-spacing: -2px;
+    margin-bottom: 30px;}
+
+h2 
+  {font-size: 1.8em;
+    letter-spacing: -1px;
+    margin-bottom: 30px;
+    font-weight: normal;}
+
+
+ 
+
+/* header */
+
+#logo 
+  {float: left;
+    margin-right: 10px;
+    font-size: 2em;
+    color: #000;
+    font-weight: bold;
+    line-height: 2;}
+
+
+#logo:hover 
+  {color: #fff;
+    text-decoration: none;}
+
+
+.navbar-default
+  {background-color: #888;
+    max-height: 58px;}
+
+
+.navbar-default .nav > li > a 
+  {color: #000;
+    text-decoration: none;
+    text-shadow: none;
+    padding: 15px;
+    margin-right: 5px;
+    line-height: 2;}
+
+
+.navbar-default navbar-nav  > a,
+.navbar-default  .nav > li > a:hover,
+.navbar-default  .nav > li > a:focus
+  {color: #fff;
+    background-color: green;}
+
+.navbar-default  .nav > li > a:hover,
+.navbar-default  .nav > li > a:focus 
+  {color: #fff;
+    background-color: transparent;}
+
+
+
+
+/*spacer*/
+
+#spacer
+  {height: 300px;
+    background: #fff;
+    margin-top: 58px;
+    margin-bottom: 50px;
+    border-bottom: 58px solid #888;}
+
+
+
+
+/*footer*/
+
+footer 
+  {background: #333;
+    height: 90px;
+    bottom: 0;
+    width: 100%;
+    margin-top: 50px;}
+
+
+.copyright
+  {color: #888;
+    padding-top: 20px;}
+
+
