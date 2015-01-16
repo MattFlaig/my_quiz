@@ -1,6 +1,7 @@
 class TakeQuizzesController < ApplicationController
   before_action :set_categories 
   #before_action :require_login 
+  require "pry"
 
 
 #take quiz actions: start, question, answer, score
@@ -24,7 +25,8 @@ class TakeQuizzesController < ApplicationController
     session[:current_question] = @number
     delete_old_answer
     save_new_answer
- 
+    get_given_answers
+    
     if params[:commit] == "Answer Survey"
       render 'take_quizzes/survey'
     else  
@@ -41,6 +43,7 @@ class TakeQuizzesController < ApplicationController
 
   def survey
     prepare_quiz
+    get_given_answers
   end
 
 
@@ -105,6 +108,14 @@ private
       flash.now[:notice] = "You arrived at the end of this quiz! Please review your questions or proceed to score!"
       render 'take_quizzes/survey'
     end 
+  end
+
+  def get_given_answers
+    @given_answers = []
+    session[:already_answered].each do |answer|
+      given = Answer.find_by(slug: answer)
+      @given_answers << given.answer_text
+    end
   end
 
   def compute_result

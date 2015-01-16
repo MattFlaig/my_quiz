@@ -7,9 +7,7 @@
     Go to Question:</br>
     <div class="btn-group">
       <% @quiz.questions.each_with_index do |question,index| %>
-        
           <%= link_to index+1, {:controller => "take_quizzes", :action => "question", current_question: question, :number => index }, class: "btn btn-default"%> 
-        
       <% end %>
     </div>
   </div> 
@@ -28,16 +26,13 @@
       <tr>
         <td><%= index + 1 %></td>
         <td><%= question.question_text %></td>
-        <td><%= session[:already_answered][index] %></td>
+        <td><%= @given_answers[index] %></td>
       
       </tr> 
       <% end %>
     </tbody>
   </table> 
 
- <!--  <div class="well">
-    You have arrived at the end of this quiz! You can either review your questions some more or push the score-button below.
-  </div>-->
   </br>
 
   <div > 
