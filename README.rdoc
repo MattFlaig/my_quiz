@@ -1,28 +1,22 @@
-== README
+== MyQuiz - create your own quizzes
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+On most quiz sites, you can take a certain amount of given quizzes, but can't create your own.
+MyQuiz is a CRUD-style Rails app which enables you to do exactly that.
 
-Things you may want to cover:
+----------------------------------------------------------------------------------------------
 
-* Ruby version
+<b>Current functionality:</b>
+* User Registration and Authentication 
+* Create questions and answers and combine them to a quiz.
+* Create new categories
+* Write reviews to quizzes other users created
+* Show user account and activity
+* Take quizzes other users created, get feedback on your performance
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+<b>Planned features:</b>
+* Enable Image and Music upload to broaden the types of quizzes
+* Implement admin features
+* Implement mailing functionality (forgot password, invitation, welcome...)
+* Implement social network features (follow certain users, notifications...)
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
